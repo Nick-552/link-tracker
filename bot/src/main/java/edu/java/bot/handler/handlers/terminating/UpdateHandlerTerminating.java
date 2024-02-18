@@ -2,7 +2,6 @@ package edu.java.bot.handler.handlers.terminating;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.handler.HandlerUtils;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 

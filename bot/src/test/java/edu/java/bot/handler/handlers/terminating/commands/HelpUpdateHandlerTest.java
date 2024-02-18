@@ -2,7 +2,6 @@ package edu.java.bot.handler.handlers.terminating.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.HandlerUtils;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
 import java.util.stream.Stream;
@@ -33,7 +32,7 @@ class HelpUpdateHandlerTest {
 
     @ParameterizedTest
     @MethodSource("supportsSource")
-    void supports(String text, boolean expected) {
+    void supports_whenHasMessage_shouldSupportOnlyWithHelpCommand(String text, boolean expected) {
         var update = mockedUpdateWithMessageWithText(text);
         boolean actual = updateHandler.supports(update);
         assertThat(actual).isEqualTo(expected);

@@ -3,7 +3,6 @@ package edu.java.bot.configuration;
 import edu.java.bot.storage.InMemoryUserLinksStorageService;
 import edu.java.bot.storage.UserLinksStorageService;
 import jakarta.validation.constraints.NotEmpty;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,6 +22,7 @@ public record ApplicationConfig(
         return "LinkTracker";
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     public static String description() {
         return "С помощью этого бота вы можете отслеживать обновление контента на таких страницах, как stackoverflow и GitHub.";
     }
