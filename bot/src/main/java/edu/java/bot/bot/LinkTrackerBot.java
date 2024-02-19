@@ -11,8 +11,9 @@ import com.pengrad.telegrambot.request.SetMyName;
 import com.pengrad.telegrambot.request.SetMyShortDescription;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.Command;
-import edu.java.bot.handler.HandlerUtils;
+import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.message.processor.UserMessageProcessor;
+import edu.java.bot.utils.BotUtils;
 import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
@@ -21,15 +22,12 @@ import org.springframework.stereotype.Component;
 
 @Log4j2
 @Component
-public class LinkTrackerBot extends TelegramBot implements Bot {
-
-    private final ApplicationConfig config;
+public class LinkTrackerBot extends TelegramBot implements UpdatesListener, AutoCloseable {
 
     private final UserMessageProcessor userMessageProcessor;
 
     public LinkTrackerBot(ApplicationConfig config, UserMessageProcessor userMessageProcessor) {
         super(config.telegramToken());
-        this.config = config;
         this.userMessageProcessor = userMessageProcessor;
         log.info("bot created");
     }
@@ -38,7 +36,8 @@ public class LinkTrackerBot extends TelegramBot implements Bot {
     public int process(List<Update> updates) {
         for (Update update : updates) {
             if (HandlerUtils.chatID(update) != -1) {
-                AbstractSendRequest sendRequest = userMessageProcessor.process(update);
+                AbstractSendRequest<? extends AbstractSendRequest<?>> sendRequest
+                    = userMessageProcessor.process(update);
                 this.execute(sendRequest);
             } else {
                 log.info("Can't get chatID");
@@ -47,7 +46,6 @@ public class LinkTrackerBot extends TelegramBot implements Bot {
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-    @Override
     @PostConstruct
     public void start() {
         setUpdatesListener(this);
@@ -58,9 +56,9 @@ public class LinkTrackerBot extends TelegramBot implements Bot {
                     .toArray(BotCommand[]::new)
             )
         );
-        execute(new SetMyName().name(ApplicationConfig.name()));
-        execute(new SetMyShortDescription().description(ApplicationConfig.about()));
-        execute(new SetMyDescription().description(ApplicationConfig.description()));
+        execute(new SetMyName().name(BotUtils.name()));
+        execute(new SetMyShortDescription().description(BotUtils.about()));
+        execute(new SetMyDescription().description(BotUtils.description()));
         log.info("bot started and configured");
     }
 

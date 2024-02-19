@@ -5,5 +5,5 @@ import com.pengrad.telegrambot.request.AbstractSendRequest;
 
 public interface UserMessageProcessor {
 
-    AbstractSendRequest process(Update update);
+    AbstractSendRequest<? extends AbstractSendRequest<?>> process(Update update);
 }

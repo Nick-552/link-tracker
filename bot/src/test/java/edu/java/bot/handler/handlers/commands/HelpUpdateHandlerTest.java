@@ -1,8 +1,8 @@
-package edu.java.bot.handler.handlers.terminating.commands;
+package edu.java.bot.handler.handlers.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.handler.HandlerUtils;
+import edu.java.bot.handler.util.HandlerMessages;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,8 @@ class HelpUpdateHandlerTest {
     @Test
     void doHandle_whenSupports_shouldReturnHelpMessage() {
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
-        SendMessage actual = updateHandler.doHandle(update);
-        assertEqualsSendMessages(actual, createSendMessage(HandlerUtils.HELP_MESSAGE));
+        SendMessage actual = (SendMessage) updateHandler.doHandle(update)
+            .orElse(createSendMessage(""));
+        assertEqualsSendMessages(actual, createSendMessage(HandlerMessages.HELP_MESSAGE));
     }
 }

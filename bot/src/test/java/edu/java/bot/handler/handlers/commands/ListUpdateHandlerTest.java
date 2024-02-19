@@ -1,8 +1,8 @@
-package edu.java.bot.handler.handlers.terminating.commands;
+package edu.java.bot.handler.handlers.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.handler.HandlerUtils;
+import edu.java.bot.handler.util.HandlerMessages;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
 import edu.java.bot.storage.UserLinksStorageService;
 import java.util.Set;
@@ -58,8 +58,9 @@ class ListUpdateHandlerTest {
     void doHandle_whenNotRegistered_shouldReturnNotRegisteredMessage() {
         when(storageService.isRegistered(any())).thenReturn(false);
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
-        SendMessage actual = listUpdateHandler.doHandle(update);
-        assertEqualsSendMessages(actual, createSendMessage(HandlerUtils.USER_NOT_REGISTERED_YET_MESSAGE));
+        SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
+            .orElse(createSendMessage(""));
+        assertEqualsSendMessages(actual, createSendMessage(HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE));
     }
 
     @Test
@@ -67,8 +68,9 @@ class ListUpdateHandlerTest {
         when(storageService.isRegistered(any())).thenReturn(true);
         when(storageService.getLinks(any())).thenReturn(Set.of());
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
-        SendMessage actual = listUpdateHandler.doHandle(update);
-        assertEqualsSendMessages(actual, createSendMessage(HandlerUtils.NO_LINKS_MESSAGE));
+        SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
+            .orElse(createSendMessage(""));
+        assertEqualsSendMessages(actual, createSendMessage(HandlerMessages.NO_LINKS_MESSAGE));
     }
 
     @Test
@@ -77,8 +79,9 @@ class ListUpdateHandlerTest {
         when(storageService.isRegistered(any())).thenReturn(true);
         when(storageService.getLinks(any())).thenReturn(links);
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
-        SendMessage actual = listUpdateHandler.doHandle(update);
-        StringBuilder sb = new StringBuilder(HandlerUtils.LINKS_LIST);
+        SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
+            .orElse(createSendMessage(""));
+        StringBuilder sb = new StringBuilder(HandlerMessages.LINKS_LIST);
         for (var link: links) {
             sb.append(link).append("\n");
         }
