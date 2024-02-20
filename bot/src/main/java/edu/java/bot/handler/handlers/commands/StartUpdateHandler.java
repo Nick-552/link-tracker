@@ -6,10 +6,11 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.UpdateHandlerWithNext;
-import edu.java.bot.handler.util.HandlerMessages;
 import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.storage.UserLinksStorageService;
 import java.util.Optional;
+import static edu.java.bot.handler.util.HandlerMessages.ALREADY_REGISTERED_MESSAGE;
+import static edu.java.bot.handler.util.HandlerMessages.getStartText;
 
 public class StartUpdateHandler extends UpdateHandlerWithNext {
 
@@ -26,11 +27,11 @@ public class StartUpdateHandler extends UpdateHandlerWithNext {
         var chatID = HandlerUtils.chatID(update);
         if (linksStorageService.registerUser(user)) {
             return Optional.of(
-                new SendMessage(chatID, HandlerMessages.START_TEXT.formatted(user.firstName()))
+                new SendMessage(chatID, getStartText(user.firstName()))
             );
         }
         return Optional.of(
-            new SendMessage(chatID, HandlerMessages.ALREADY_REGISTERED_MESSAGE)
+            new SendMessage(chatID, ALREADY_REGISTERED_MESSAGE)
         );
     }
 }

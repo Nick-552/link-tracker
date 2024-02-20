@@ -2,7 +2,6 @@ package edu.java.bot.handler.handlers.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.handler.util.HandlerMessages;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
 import edu.java.bot.storage.UserLinksStorageService;
 import java.util.Set;
@@ -18,6 +17,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.createSendMessage;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
+import static edu.java.bot.handler.util.HandlerMessages.LINKS_LIST;
+import static edu.java.bot.handler.util.HandlerMessages.NO_LINKS_MESSAGE;
+import static edu.java.bot.handler.util.HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -42,7 +44,7 @@ class ListUpdateHandlerTest {
             Arguments.of("/list smthng", true),
             Arguments.of("/command", false),
             Arguments.of("dhfghfghd", false),
-            Arguments.of("help", false)
+            Arguments.of("list", false)
         );
     }
 
@@ -60,7 +62,7 @@ class ListUpdateHandlerTest {
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
             .orElse(createSendMessage(""));
-        assertEqualsSendMessages(actual, createSendMessage(HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE));
+        assertEqualsSendMessages(actual, createSendMessage(USER_NOT_REGISTERED_YET_MESSAGE));
     }
 
     @Test
@@ -70,7 +72,7 @@ class ListUpdateHandlerTest {
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
             .orElse(createSendMessage(""));
-        assertEqualsSendMessages(actual, createSendMessage(HandlerMessages.NO_LINKS_MESSAGE));
+        assertEqualsSendMessages(actual, createSendMessage(NO_LINKS_MESSAGE));
     }
 
     @Test
@@ -81,7 +83,7 @@ class ListUpdateHandlerTest {
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
             .orElse(createSendMessage(""));
-        StringBuilder sb = new StringBuilder(HandlerMessages.LINKS_LIST);
+        StringBuilder sb = new StringBuilder(LINKS_LIST);
         for (var link: links) {
             sb.append(link).append("\n");
         }

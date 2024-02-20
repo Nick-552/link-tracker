@@ -24,7 +24,12 @@ public abstract class UpdateHandlerWithNext implements UpdateHandler {
     @Override
     public AbstractSendRequest<? extends AbstractSendRequest<?>> handle(Update update) {
         if (supports(update)) {
-            return doHandle(update).orElse(nextHandle(update));
+            var result = doHandle(update);
+            if (result.isPresent()) {
+                return result.get();
+            }
+            return nextHandle(update);
+            //return doHandle(update).orElse(nextHandle(update));
         }
         return nextHandle(update);
     }

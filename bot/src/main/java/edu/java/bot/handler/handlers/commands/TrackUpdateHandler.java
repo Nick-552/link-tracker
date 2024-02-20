@@ -6,10 +6,14 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.UpdateHandlerWithNext;
-import edu.java.bot.handler.util.HandlerMessages;
 import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.storage.UserLinksStorageService;
 import java.util.Optional;
+import static edu.java.bot.handler.util.HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE;
+import static edu.java.bot.handler.util.HandlerMessages.getInvalidLinkMessage;
+import static edu.java.bot.handler.util.HandlerMessages.getLinkAddedMessage;
+import static edu.java.bot.handler.util.HandlerMessages.getLinkNotAddedMessage;
+import static edu.java.bot.handler.util.HandlerMessages.getTrackExplanation;
 import static edu.java.bot.utils.LinkUtils.isHttpLink;
 
 public class TrackUpdateHandler extends UpdateHandlerWithNext {
@@ -30,26 +34,26 @@ public class TrackUpdateHandler extends UpdateHandlerWithNext {
         var tokens = HandlerUtils.text(update).split(" ");
         if (!linksStorageService.isRegistered(user)) {
             return Optional.of(
-                new SendMessage(chatID, HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE)
+                new SendMessage(chatID, USER_NOT_REGISTERED_YET_MESSAGE)
             );
         } else if (tokens.length != 2) {
             return Optional.of(
-                new SendMessage(chatID, HandlerMessages.TRACK_EXPLANATION.formatted(Command.TRACK.getCommand()))
+                new SendMessage(chatID, getTrackExplanation(Command.TRACK.getCommand()))
             );
         }
         var link = tokens[1];
         if (!isHttpLink(link)) {
             return Optional.of(
-                new SendMessage(chatID, HandlerMessages.INVALID_LINK_MESSAGE.formatted(link))
+                new SendMessage(chatID, getInvalidLinkMessage(link))
             );
         }
         if (linksStorageService.addLink(user, tokens[1])) {
             return Optional.of(
-                new SendMessage(chatID, HandlerMessages.LINK_ADDED_MESSAGE.formatted(link))
+                new SendMessage(chatID, getLinkAddedMessage(link))
             );
         }
         return Optional.of(
-            new SendMessage(chatID, HandlerMessages.LINK_ALREADY_ADDED_MESSAGE.formatted(link))
+            new SendMessage(chatID, getLinkNotAddedMessage(link))
         );
     }
 }

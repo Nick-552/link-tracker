@@ -5,15 +5,17 @@ import com.pengrad.telegrambot.request.AbstractSendRequest;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.handlers.UpdateHandlerLogger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 @Service
+@Log4j2
 public class UserMessageProcessorChainImpl implements UserMessageProcessor {
 
     private final UpdateHandlerWithNext updateHandler;
 
     public UserMessageProcessorChainImpl() {
-        updateHandler = new UpdateHandlerLogger();
+        updateHandler = new UpdateHandlerLogger(log);
         updateHandler
             .setNextHandler(Command.START.getHandler())
             .setNextHandler(Command.HELP.getHandler())

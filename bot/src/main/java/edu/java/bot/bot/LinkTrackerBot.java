@@ -56,9 +56,9 @@ public class LinkTrackerBot extends TelegramBot implements UpdatesListener, Auto
                     .toArray(BotCommand[]::new)
             )
         );
-        execute(new SetMyName().name(BotUtils.name()));
-        execute(new SetMyShortDescription().description(BotUtils.about()));
-        execute(new SetMyDescription().description(BotUtils.description()));
+        execute(new SetMyName().name(BotUtils.NAME));
+        execute(new SetMyShortDescription().description(BotUtils.ABOUT));
+        execute(new SetMyDescription().description(BotUtils.DESCRIPTION));
         log.info("bot started and configured");
     }
 

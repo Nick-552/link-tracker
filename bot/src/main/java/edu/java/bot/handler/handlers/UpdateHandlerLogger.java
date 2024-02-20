@@ -4,10 +4,13 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import java.util.Optional;
-import lombok.extern.log4j.Log4j2;
+import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.Logger;
 
-@Log4j2
+@RequiredArgsConstructor
 public class UpdateHandlerLogger extends UpdateHandlerWithNext {
+
+    private final Logger log;
 
     @Override
     public boolean supports(Update update) {

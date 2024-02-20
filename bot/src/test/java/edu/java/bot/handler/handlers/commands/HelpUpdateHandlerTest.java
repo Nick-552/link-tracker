@@ -2,7 +2,6 @@ package edu.java.bot.handler.handlers.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.handler.util.HandlerMessages;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.createSendMessage;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
+import static edu.java.bot.handler.util.HandlerMessages.HELP_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HelpUpdateHandlerTest {
@@ -43,6 +43,6 @@ class HelpUpdateHandlerTest {
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) updateHandler.doHandle(update)
             .orElse(createSendMessage(""));
-        assertEqualsSendMessages(actual, createSendMessage(HandlerMessages.HELP_MESSAGE));
+        assertEqualsSendMessages(actual, createSendMessage(HELP_MESSAGE));
     }
 }
