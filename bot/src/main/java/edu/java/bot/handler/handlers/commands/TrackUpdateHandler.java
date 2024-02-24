@@ -3,7 +3,6 @@ package edu.java.bot.handler.handlers.commands;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
@@ -18,8 +17,12 @@ import static edu.java.bot.utils.LinkUtils.isHttpLink;
 
 public class TrackUpdateHandler extends UpdateHandlerWithNext {
 
-    private final UserLinksStorageService linksStorageService = ApplicationConfig.storage();
+    private final UserLinksStorageService linksStorageService;
 
+
+    public TrackUpdateHandler(UserLinksStorageService linksStorageService) {
+        this.linksStorageService = linksStorageService;
+    }
 
     @Override
     public boolean supports(Update update) {

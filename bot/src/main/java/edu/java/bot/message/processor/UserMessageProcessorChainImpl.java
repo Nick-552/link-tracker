@@ -2,10 +2,11 @@ package edu.java.bot.message.processor;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
-import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.handlers.UpdateHandlerLogger;
+import edu.java.bot.provider.HandlerProvider;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,14 +15,14 @@ public class UserMessageProcessorChainImpl implements UserMessageProcessor {
 
     private final UpdateHandlerWithNext updateHandler;
 
-    public UserMessageProcessorChainImpl() {
+    public UserMessageProcessorChainImpl(@Autowired HandlerProvider provider) {
         updateHandler = new UpdateHandlerLogger(log);
         updateHandler
-            .setNextHandler(Command.START.getHandler())
-            .setNextHandler(Command.HELP.getHandler())
-            .setNextHandler(Command.TRACK.getHandler())
-            .setNextHandler(Command.UNTRACK.getHandler())
-            .setNextHandler(Command.LIST.getHandler());
+            .setNextHandler(provider.getStartUpdateHandler())
+            .setNextHandler(provider.getHelpUpdateHandler())
+            .setNextHandler(provider.getTrackUpdateHandler())
+            .setNextHandler(provider.getUntrackUpdateHandler())
+            .setNextHandler(provider.getListUpdateHandler());
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
+import edu.java.bot.storage.InMemoryUserLinksStorageService;
 import edu.java.bot.storage.UserLinksStorageService;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,7 @@ class UntrackUpdateHandlerTest {
 
     @BeforeEach
     void setup() {
-        untrackUpdateHandler = new UntrackUpdateHandler();
+        untrackUpdateHandler = new UntrackUpdateHandler(new InMemoryUserLinksStorageService());
         ReflectionTestUtils.setField(untrackUpdateHandler, "linksStorageService", storageService);
     }
 

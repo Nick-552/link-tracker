@@ -16,7 +16,7 @@ public record ApplicationConfig(
     private static final UserLinksStorageService STORAGE_SERVICE = new InMemoryUserLinksStorageService();
 
     @Bean
-    public static UserLinksStorageService storage() {
+    public UserLinksStorageService storage() {
         return STORAGE_SERVICE;
     }
 }

@@ -3,6 +3,7 @@ package edu.java.bot.handler.handlers.commands;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
+import edu.java.bot.storage.InMemoryUserLinksStorageService;
 import edu.java.bot.storage.UserLinksStorageService;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 class ListUpdateHandlerTest {
 
-    ListUpdateHandler listUpdateHandler = new ListUpdateHandler();
+    ListUpdateHandler listUpdateHandler = new ListUpdateHandler(new InMemoryUserLinksStorageService());
 
     @Mock
     static UserLinksStorageService storageService = Mockito.mock(UserLinksStorageService.class);

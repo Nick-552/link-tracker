@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
+import edu.java.bot.storage.InMemoryUserLinksStorageService;
 import edu.java.bot.storage.UserLinksStorageService;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class TrackUpdateHandlerTest {
 
     @BeforeEach
     void setup() {
-        trackUpdateHandler = new TrackUpdateHandler();
+        trackUpdateHandler = new TrackUpdateHandler(new InMemoryUserLinksStorageService());
         ReflectionTestUtils.setField(trackUpdateHandler, "linksStorageService", storageService);
     }
 
