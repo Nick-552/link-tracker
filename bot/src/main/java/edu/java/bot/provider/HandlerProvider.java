@@ -14,16 +14,16 @@ public class HandlerProvider {
 
     private final UserLinksStorageService storageService;
 
+    public HandlerProvider(UserLinksStorageService storageService) {
+        this.storageService = storageService;
+    }
+
     public UpdateHandlerWithNext getStartUpdateHandler() {
         return new StartUpdateHandler(storageService);
     }
 
     public UpdateHandlerWithNext getHelpUpdateHandler() {
         return new HelpUpdateHandler();
-    }
-
-    public HandlerProvider(UserLinksStorageService storageService) {
-        this.storageService = storageService;
     }
 
     public TrackUpdateHandler getTrackUpdateHandler() {

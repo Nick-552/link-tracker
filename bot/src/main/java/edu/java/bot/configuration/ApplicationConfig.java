@@ -13,10 +13,9 @@ public record ApplicationConfig(
     @NotEmpty
     String telegramToken
 ) {
-    private static final UserLinksStorageService STORAGE_SERVICE = new InMemoryUserLinksStorageService();
 
     @Bean
     public UserLinksStorageService storage() {
-        return STORAGE_SERVICE;
+        return new InMemoryUserLinksStorageService();
     }
 }
