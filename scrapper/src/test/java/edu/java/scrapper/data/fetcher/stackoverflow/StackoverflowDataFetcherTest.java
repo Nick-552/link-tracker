@@ -1,28 +1,33 @@
-package edu.java.scrapper.client.stackoverflow;
+package edu.java.scrapper.data.fetcher.stackoverflow;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.scrapper.client.stackoverflow.StackoverflowClient.StackoverflowQuestionInfo;
+import edu.java.scrapper.client.stackoverflow.StackoverflowClient;
+import edu.java.scrapper.data.fetcher.AbstractDataFetcher;
 import edu.java.scrapper.dto.LastLinkUpdate;
+import edu.java.scrapper.dto.stackoverflow.StackoverflowQuestionInfo;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
-@WireMockTest()
-class StackoverflowClientTest {
+@WireMockTest
+class StackoverflowDataFetcherTest {
 
-    static StackoverflowClient stackoverflowClient;
+    static StackoverflowDataFetcher stackoverflowDataFetcher;
     OffsetDateTime lastActivityDateTime = OffsetDateTime
         .ofInstant(
             Instant.ofEpochSecond(1280335676),
@@ -31,10 +36,11 @@ class StackoverflowClientTest {
 
     @BeforeAll
     static void setUpClient(WireMockRuntimeInfo wireMockRuntimeInfo) {
-        stackoverflowClient = new StackoverflowClient(
+        var stackoverflowClient = new StackoverflowClient(
             WebClient.builder(),
             wireMockRuntimeInfo.getHttpBaseUrl()
         );
+        stackoverflowDataFetcher = new StackoverflowDataFetcher(stackoverflowClient);
     }
 
     @BeforeEach
@@ -56,33 +62,35 @@ class StackoverflowClientTest {
     }
 
     @Test
+    @SneakyThrows
     void getLastUpdate() {
         String url = "https://stackoverflow.com/questions/123/title-of-question";
         var expectedUpdate = new LastLinkUpdate(url, lastActivityDateTime);
-        var actualUpdate = stackoverflowClient.getLastUpdate(url);
+        var actualUpdate = stackoverflowDataFetcher.getLastUpdate(url);
         assertThat(actualUpdate).isEqualTo(expectedUpdate);
     }
 
     @Test
-    void getStackoverflowQuestionInfo() {
+    @SneakyThrows
+    void getQuestionInfo_whenOk() {
         var expectedInfo = new StackoverflowQuestionInfo(lastActivityDateTime, 7);
-        var actualInfo = stackoverflowClient.getStackoverflowQuestionInfo("123");
+        var actualInfo = stackoverflowDataFetcher.getQuestionInfo("123");
         assertThat(actualInfo).isEqualTo(expectedInfo);
     }
 
     @Test
-    void getLastUpdate_onStatusError_shouldReturnWithNullLastUpdate() {
+    @SneakyThrows
+    void getLastUpdate_onStatusError_shouldThrowWebClientResponseException() {
         String url = "https://stackoverflow.com/" + "questions/25645634/no-question-on-this-address";
-        var expectedUpdate = new LastLinkUpdate(url, null);
-        var actualUpdate = stackoverflowClient.getLastUpdate(url);
-        assertThat(actualUpdate).isEqualTo(expectedUpdate);
+        assertThatExceptionOfType(WebClientResponseException.class)
+            .isThrownBy(() -> stackoverflowDataFetcher.getLastUpdate(url));
     }
 
     @Test
-    void getStackoverflowQuestionInfo_onStatusError_shouldReturnEmpty() {
-        var expectedInfo = StackoverflowQuestionInfo.empty();
-        var actualInfo = stackoverflowClient.getStackoverflowQuestionInfo("25645634");
-        assertThat(actualInfo).isEqualTo(expectedInfo);
+    @SneakyThrows
+    void getQuestionInfo_onStatusError_shouldThrowWebClientResponseException() {
+        assertThatExceptionOfType(WebClientResponseException.class)
+            .isThrownBy(() -> stackoverflowDataFetcher.getQuestionInfo("25645634"));
     }
 
     @ParameterizedTest
@@ -92,18 +100,9 @@ class StackoverflowClientTest {
         "http://stackoverflow.com/questions/13133695/incompatibleclasschangeerror-with-eclipse-jetty",
         "https://stackoverflow.com/questions/incompatibleclasschangeerror-with-eclipse-jetty",
     })
-    @NullAndEmptySource
-    void isSupported_whenInvalidUrl_shouldReturnFalse(String url) {
-        assertThat(stackoverflowClient.isSupported(url)).isFalse();
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-        "https://stackoverflow.com/questions/13133695/incompatibleclasschangeerror-with-eclipse-jetty",
-        "https://stackoverflow.com/questions/13133695",
-        "https://stackoverflow.com/questions/13133695/"
-    })
-    void isSupported_whenValidUrl_shouldReturnTrue(String url) {
-        assertThat(stackoverflowClient.isSupported(url)).isTrue();
+    @EmptySource
+    void getLastUpdate_whenInvalidUrl_shouldThrowUnsupportedUrlException(String url) {
+        assertThatExceptionOfType(AbstractDataFetcher.UnsupportedUrlException.class)
+            .isThrownBy(() -> stackoverflowDataFetcher.getLastUpdate(url));
     }
 }
