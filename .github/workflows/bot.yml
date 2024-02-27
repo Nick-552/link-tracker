@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     permissions:
+      pull-requests: write
       packages: write
       pull-requests: write
 
