@@ -30,13 +30,6 @@ public class GithubDataFetcher extends AbstractDataFetcher implements LinkUpdate
         this.githubClient = githubClient;
     }
 
-//    @PostConstruct
-//    public void fetchAndLog() throws JSONException, JsonProcessingException {
-//        log.info(getRateLimit());
-//        log.info(getRepoInfo("Nick-552", "link-tracker"));
-//        log.info(getLastUpdate("https://github.com/Nick-552/link-tracker"));
-//    }
-
     public GithubRateInfo getRateInfo() throws JSONException, JsonProcessingException {
         var rateJson = githubClient.getJson(RATE_URI)
             .getJSONObject("rate");

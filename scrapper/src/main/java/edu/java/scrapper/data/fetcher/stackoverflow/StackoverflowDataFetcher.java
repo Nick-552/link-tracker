@@ -27,12 +27,6 @@ public class StackoverflowDataFetcher extends AbstractDataFetcher implements Lin
         this.stackoverflowClient = client;
     }
 
-//    @PostConstruct
-//    public void fetchAndLog() throws JSONException, JsonProcessingException {
-//        log.info(getQuestionInfo("10895605"));
-//        log.info(getLastUpdate("https://stackoverflow.com/questions/10895605/how-to-mock-a-single-method-in-java"));
-//    }
-
     @Override
     public LastLinkUpdate getLastUpdate(String url) throws JSONException, JsonProcessingException {
         Matcher matcher = QUESTION_PATTERN.matcher(url);
