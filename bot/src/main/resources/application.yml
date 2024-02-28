@@ -6,9 +6,16 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  config:
+    import: optional:secrets.yml
 
 server:
   port: 8090
 
 logging:
   config: classpath:log4j2-plain.xml
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
