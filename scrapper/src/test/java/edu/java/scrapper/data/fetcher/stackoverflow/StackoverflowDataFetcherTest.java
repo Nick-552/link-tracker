@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.stackoverflow.StackoverflowClient;
 import edu.java.scrapper.data.fetcher.AbstractDataFetcher;
 import edu.java.scrapper.dto.LastLinkUpdate;
-import edu.java.scrapper.dto.stackoverflow.StackoverflowQuestionInfo;
+import edu.java.scrapper.dto.response.stackoverflow.StackoverflowQuestionInfo;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
