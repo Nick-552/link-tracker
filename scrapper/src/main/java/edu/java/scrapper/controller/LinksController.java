@@ -6,7 +6,6 @@ import edu.java.scrapper.dto.response.LinkResponse;
 import edu.java.scrapper.dto.response.LinksListResponse;
 import edu.java.scrapper.service.LinksService;
 import jakarta.validation.Valid;
-import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,13 +25,11 @@ public class LinksController {
     }
 
     @GetMapping
-    @SneakyThrows
     public LinksListResponse getLinks(@RequestHeader("Tg-Chat-Id") Long chatId) {
         return linksService.getLinks(chatId);
     }
 
     @PostMapping
-    @SneakyThrows
     public LinkResponse addLink(
         @RequestHeader("Tg-Chat-Id") Long chatId,
         @RequestBody @Valid AddLinkRequest addLinkRequest
@@ -41,7 +38,6 @@ public class LinksController {
     }
 
     public @DeleteMapping
-    @SneakyThrows
     LinkResponse removeLink(
         @RequestHeader("Tg-Chat-Id") Long chatId,
         @RequestBody @Valid RemoveLinkRequest removeLinkRequest

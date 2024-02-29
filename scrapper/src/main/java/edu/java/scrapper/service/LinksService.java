@@ -19,6 +19,7 @@ public class LinksService {
     }
 
     public LinksListResponse getLinks(Long chatId) {
+        log.info(chatId);
         return new LinksListResponse(
             List.of(
                 createLinkResponseWithId(chatId)
