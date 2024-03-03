@@ -3,12 +3,15 @@ package edu.java.bot.client.scrapper.scrapper;
 import edu.java.bot.client.scrapper.AbstractJsonWebClient;
 import edu.java.bot.client.scrapper.scrapper.request.AddLinkRequest;
 import edu.java.bot.client.scrapper.scrapper.request.RemoveLinkRequest;
+import edu.java.bot.client.scrapper.scrapper.response.ApiErrorResponse;
 import edu.java.bot.client.scrapper.scrapper.response.LinkResponse;
 import edu.java.bot.client.scrapper.scrapper.response.LinksListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 @Log4j2
@@ -20,6 +23,8 @@ public class ScrapperClient extends AbstractJsonWebClient {
 
     private static final String TG_CHAT_HEADER = "Tg-Chat-Id";
 
+    private static final String SERVER_ERROR = "Server is not responding";
+
     public ScrapperClient(
         WebClient.Builder webClientBuilder,
         @Value("${api.scrapper.base-url:http://localhost:8080}") String baseUrl
@@ -27,49 +32,95 @@ public class ScrapperClient extends AbstractJsonWebClient {
         super(webClientBuilder, baseUrl);
     }
 
-    public Void addTgChat(Long chatId) {
-        return webClient.post()
-            .uri(TG_CHAT_URI, chatId)
-            .retrieve()
-            .bodyToMono(Void.class)
-            .block();
+    public void addTgChat(Long chatId) {
+        var response = webClient.post()
+            .uri(TG_CHAT_URI, chatId).exchangeToMono(clientResponse -> {
+                if (clientResponse.statusCode().is2xxSuccessful()) {
+                    return Mono.empty();
+                } else if (clientResponse.statusCode().is5xxServerError()) {
+                    throw new RuntimeException(SERVER_ERROR);
+                }
+                return clientResponse.bodyToMono(ApiErrorResponse.class);
+            }).block();
+        if (response instanceof ApiErrorResponse errorResponse) {
+            log.info(errorResponse);
+            throw new RuntimeException(errorResponse.description());
+        }
     }
 
-    public Void deleteTgChat(Long chatId) {
-        return webClient.delete()
+    public void deleteTgChat(Long chatId) {
+        var response = webClient.delete()
             .uri(TG_CHAT_URI, chatId)
-            .retrieve()
-            .bodyToMono(Void.class)
-            .block();
+            .exchangeToMono(clientResponse -> {
+                if (clientResponse.statusCode().is2xxSuccessful()) {
+                    return Mono.empty();
+                } else if (clientResponse.statusCode().is5xxServerError()) {
+                    throw new RuntimeException(SERVER_ERROR);
+                }
+                return clientResponse.bodyToMono(ApiErrorResponse.class);
+            }).block();
+        if (response instanceof ApiErrorResponse errorResponse) {
+            log.info(errorResponse);
+            throw new RuntimeException(errorResponse.description());
+        }
     }
 
     public LinksListResponse getLinks(Long chatId) {
-        return webClient.get()
+        var response = webClient.get()
             .uri(LINKS_URI)
             .header(TG_CHAT_HEADER, chatId.toString())
-            .retrieve()
-            .bodyToMono(LinksListResponse.class)
-            .block();
-
+            .exchangeToMono(clientResponse -> {
+                if (clientResponse.statusCode().is2xxSuccessful()) {
+                    return clientResponse.bodyToMono(LinksListResponse.class);
+                } else if (clientResponse.statusCode().is5xxServerError()) {
+                    throw new RuntimeException(SERVER_ERROR);
+                }
+                return clientResponse.bodyToMono(ApiErrorResponse.class);
+            }).block();
+        if (response instanceof ApiErrorResponse errorResponse) {
+            log.info(errorResponse);
+            throw new RuntimeException(errorResponse.description());
+        }
+        return (LinksListResponse) response;
     }
 
     public LinkResponse addLink(Long chatId, AddLinkRequest addLinkRequest) {
-        return webClient.post()
+        var response = webClient.post()
             .uri(LINKS_URI)
             .header(TG_CHAT_HEADER, chatId.toString())
             .bodyValue(addLinkRequest)
-            .retrieve()
-            .bodyToMono(LinkResponse.class)
-            .block();
+            .exchangeToMono(clientResponse -> {
+                if (clientResponse.statusCode().is2xxSuccessful()) {
+                    return clientResponse.bodyToMono(LinkResponse.class);
+                } else if (clientResponse.statusCode().is5xxServerError()) {
+                    throw new RuntimeException(SERVER_ERROR);
+                }
+                return clientResponse.bodyToMono(ApiErrorResponse.class);
+            }).block();
+        if (response instanceof ApiErrorResponse errorResponse) {
+            log.info(errorResponse);
+            throw new RuntimeException(errorResponse.description());
+        }
+        return (LinkResponse) response;
     }
 
     public LinkResponse removeLink(Long chatId, RemoveLinkRequest removeLinkRequest) {
-        return webClient.post()
+        var response = webClient.method(HttpMethod.DELETE)
             .uri(LINKS_URI)
             .header(TG_CHAT_HEADER, chatId.toString())
             .bodyValue(removeLinkRequest)
-            .retrieve()
-            .bodyToMono(LinkResponse.class)
-            .block();
+            .exchangeToMono(clientResponse -> {
+                if (clientResponse.statusCode().is2xxSuccessful()) {
+                    return clientResponse.bodyToMono(LinkResponse.class);
+                } else if (clientResponse.statusCode().is5xxServerError()) {
+                    throw new RuntimeException(SERVER_ERROR);
+                }
+                return clientResponse.bodyToMono(ApiErrorResponse.class);
+            }).block();
+        if (response instanceof ApiErrorResponse errorResponse) {
+            log.info(errorResponse);
+            throw new RuntimeException(errorResponse.description());
+        }
+        return (LinkResponse) response;
     }
 }

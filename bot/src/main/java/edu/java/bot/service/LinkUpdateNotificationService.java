@@ -11,7 +11,7 @@ public class LinkUpdateNotificationService {
     public void notifyAllWithLinkUpdate(LinkUpdate linkUpdate) {
         for (var chatId: linkUpdate.tgChatIds()) {
             log.info(
-                "notifying to chatId{} that link url{} was updated {} ",
+                "notifying to chatId {} that link {} was updated: {} ",
                 chatId, linkUpdate.url(), linkUpdate.description()
             );
         }

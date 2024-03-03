@@ -1,4 +1,4 @@
-package edu.java.bot.exception;
+package edu.java.bot.controller.advice;
 
 import edu.java.bot.dto.response.ApiErrorResponse;
 import java.util.Arrays;
