@@ -1,12 +1,20 @@
 app:
   scheduler:
     enable: true
-    interval: 10s
-    force-check-delay: 10s
+    interval: 10000
+    force-check-delay: 10000
 
 spring:
   application:
     name: scrapper
+  config:
+    import: optional:secrets.yml
+
+api-client:
+  github:
+    base-url: https://api.github.com
+  stackoverflow:
+    base-url: https://api.stackexchange.com/2.3
 
 server:
   port: 8080
