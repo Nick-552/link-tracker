@@ -1,11 +1,11 @@
 package edu.java.scrapper.client.github;
 
-import edu.java.scrapper.client.AbstractJsonWebClient;
+import edu.java.scrapper.client.AbstractGetJsonWebClient;
 import edu.java.scrapper.dto.response.github.GithubRateResponse;
 import edu.java.scrapper.dto.response.github.GithubRepoInfo;
 import org.springframework.web.reactive.function.client.WebClient;
 
-public class GithubClient extends AbstractJsonWebClient {
+public class GithubClient extends AbstractGetJsonWebClient {
 
     private static final String RATE_URI = "/rate_limit";
 
