@@ -33,3 +33,6 @@ build/
 
 ### Secrets ###
 **/secrets.*
+
+### Env ###
+**/*.env

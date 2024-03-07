@@ -1,4 +1,4 @@
-package edu.java.bot.client.scrapper.scrapper.response;
+package edu.java.bot.client.scrapper.response;
 
 import java.util.List;
 

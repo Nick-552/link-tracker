@@ -7,14 +7,15 @@ app:
 spring:
   application:
     name: scrapper
-  config:
-    import: optional:secrets.yml
 
 api-client:
   github:
     base-url: https://api.github.com
+    auth-token: ${GITHUB_AUTH_TOKEN:}
   stackoverflow:
     base-url: https://api.stackexchange.com/2.3
+  bot:
+    base-url: ${BOT_API_CLIENT_BASE_URL}
 
 server:
   port: 8080

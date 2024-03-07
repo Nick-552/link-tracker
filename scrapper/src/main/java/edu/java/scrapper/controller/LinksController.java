@@ -6,6 +6,7 @@ import edu.java.scrapper.dto.response.LinkResponse;
 import edu.java.scrapper.dto.response.LinksListResponse;
 import edu.java.scrapper.service.LinksService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,14 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/links", consumes = "application/json", produces = "application/json")
 public class LinksController {
 
     private final LinksService linksService;
-
-    public LinksController(LinksService linksService) {
-        this.linksService = linksService;
-    }
 
     @GetMapping
     public LinksListResponse getLinks(@RequestHeader("Tg-Chat-Id") Long chatId) {

@@ -1,11 +1,11 @@
-package edu.java.bot.client.scrapper.scrapper;
+package edu.java.bot.client.scrapper;
 
-import edu.java.bot.client.scrapper.AbstractJsonWebClient;
-import edu.java.bot.client.scrapper.scrapper.request.AddLinkRequest;
-import edu.java.bot.client.scrapper.scrapper.request.RemoveLinkRequest;
-import edu.java.bot.client.scrapper.scrapper.response.ApiErrorResponse;
-import edu.java.bot.client.scrapper.scrapper.response.LinkResponse;
-import edu.java.bot.client.scrapper.scrapper.response.LinksListResponse;
+import edu.java.bot.client.AbstractJsonWebClient;
+import edu.java.bot.client.scrapper.request.AddLinkRequest;
+import edu.java.bot.client.scrapper.request.RemoveLinkRequest;
+import edu.java.bot.client.scrapper.response.ApiErrorResponse;
+import edu.java.bot.client.scrapper.response.LinkResponse;
+import edu.java.bot.client.scrapper.response.LinksListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -27,7 +27,7 @@ public class ScrapperClient extends AbstractJsonWebClient {
 
     public ScrapperClient(
         WebClient.Builder webClientBuilder,
-        @Value("${api.scrapper.base-url:http://localhost:8080}") String baseUrl
+        @Value("${api-client.scrapper.base-url}") String baseUrl
     ) {
         super(webClientBuilder, baseUrl);
     }

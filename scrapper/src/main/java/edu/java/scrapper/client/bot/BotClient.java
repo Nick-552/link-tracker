@@ -1,6 +1,6 @@
 package edu.java.scrapper.client.bot;
 
-import edu.java.scrapper.client.AbstractGetJsonWebClient;
+import edu.java.scrapper.client.AbstractJsonWebClient;
 import edu.java.scrapper.client.bot.request.LinkUpdate;
 import edu.java.scrapper.dto.response.ApiErrorResponse;
 import lombok.extern.log4j.Log4j2;
@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @Log4j2
-public class BotClient extends AbstractGetJsonWebClient {
+public class BotClient extends AbstractJsonWebClient {
 
     private static final String UPDATES_URI = "/updates";
 
@@ -19,7 +19,7 @@ public class BotClient extends AbstractGetJsonWebClient {
 
     public BotClient(
         WebClient.Builder webClientBuilder,
-        @Value("${api.bot.base-url:http://localhost:8090}") String baseUrl
+        @Value("${api-client.bot.base-url}") String baseUrl
     ) {
         super(webClientBuilder, baseUrl);
     }
