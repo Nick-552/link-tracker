@@ -2,17 +2,19 @@ package edu.java.scrapper.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.ToString;
+import org.springframework.http.HttpStatusCode;
 
 @Getter
 @RequiredArgsConstructor
+@ToString
 public class ApiException extends RuntimeException {
 
-    private final HttpStatus httpStatus;
+    private final HttpStatusCode httpStatus;
 
     private final String description;
 
-    public ApiException(HttpStatus status, String description, String message) {
+    public ApiException(HttpStatusCode status, String description, String message) {
         super(message);
         this.httpStatus = status;
         this.description = description;

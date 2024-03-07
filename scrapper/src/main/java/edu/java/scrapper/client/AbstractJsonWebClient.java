@@ -12,10 +12,10 @@ public abstract class AbstractJsonWebClient {
 
     protected AbstractJsonWebClient(WebClient.Builder webClientBuilder, String baseUrl) {
         this.webClient = webClientBuilder
-                .baseUrl(baseUrl)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .build();
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .build();
         log.info("created");
     }
 }

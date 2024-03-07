@@ -3,7 +3,6 @@ package edu.java.scrapper.controller.advice;
 import edu.java.scrapper.dto.response.ApiErrorResponse;
 import edu.java.scrapper.exception.ApiException;
 import java.util.Arrays;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-@Log4j2
 @RestControllerAdvice
 public class ApiErrorHandler {
 
@@ -35,7 +33,6 @@ public class ApiErrorHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleException(Exception e) {
-        log.info(e.getClass());
         return createApiErrorResponseEntity(
             e,
             HttpStatus.BAD_REQUEST,
@@ -51,7 +48,7 @@ public class ApiErrorHandler {
         return ResponseEntity.status(status).body(
             new ApiErrorResponse(
                 description,
-                status.toString(),
+                HttpStatus.valueOf(status.value()),
                 e.getClass().getName(),
                 e.getMessage(),
                 Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toList()
