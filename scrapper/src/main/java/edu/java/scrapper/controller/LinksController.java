@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/links", consumes = "application/json", produces = "application/json")
+@RequestMapping(path = "/links", produces = "application/json")
 public class LinksController {
 
     private final LinksService linksService;
@@ -35,8 +35,8 @@ public class LinksController {
         return linksService.addLink(chatId, addLinkRequest);
     }
 
-    public @DeleteMapping
-    LinkResponse removeLink(
+    @DeleteMapping(consumes = "application/json")
+    public LinkResponse removeLink(
         @RequestHeader("Tg-Chat-Id") Long chatId,
         @RequestBody @Valid RemoveLinkRequest removeLinkRequest
     ) {

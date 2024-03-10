@@ -17,7 +17,7 @@ public class LinkUpdatesController {
     private final LinkUpdateNotificationService notificationService;
 
     @PostMapping
-    public void sendUpdatedLinks(@RequestBody @Valid LinkUpdate linkUpdate) {
+    public void sendUpdatedLink(@RequestBody @Valid LinkUpdate linkUpdate) {
         notificationService.notifyAllWithLinkUpdate(linkUpdate);
     }
 }

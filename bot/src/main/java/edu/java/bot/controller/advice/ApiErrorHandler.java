@@ -8,9 +8,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
-public class ExceptionApiHandler {
+public class ApiErrorHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiErrorResponse> handleApiException(ApiException e) {
@@ -18,6 +19,15 @@ public class ExceptionApiHandler {
             e,
             e.getHttpStatus(),
             e.getDescription()
+        );
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
+        return createApiErrorResponseEntity(
+            e,
+            e.getStatusCode(),
+            e.getBody().getDetail()
         );
     }
 
