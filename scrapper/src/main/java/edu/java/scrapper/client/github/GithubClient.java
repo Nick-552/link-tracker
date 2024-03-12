@@ -18,6 +18,14 @@ public class GithubClient extends AbstractJsonWebClient {
         super(webClientBuilder, baseUrl);
     }
 
+    public <T> T getResponse(String uri, Class<T> tClass) {
+        return webClient.get()
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(tClass)
+            .block();
+    }
+
     public GithubRepoInfo getRepoResponse(String owner, String repoName) {
         String repoUri = REPO_URI.formatted(owner, repoName);
         return getResponse(repoUri, GithubRepoInfo.class);

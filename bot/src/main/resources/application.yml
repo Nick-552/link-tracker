@@ -1,5 +1,5 @@
 app:
-  telegram-token: ${app.telegram-token}
+  telegram-token: ${TG_TOKEN}
 
 spring:
   application:
@@ -7,8 +7,17 @@ spring:
   jackson:
     time-zone: UTC
 
+api-client:
+  scrapper:
+    base-url: ${SCRAPPER_API_CLIENT_BASE_URL}
+
 server:
   port: 8090
 
 logging:
   config: classpath:log4j2-plain.xml
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

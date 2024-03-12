@@ -7,19 +7,17 @@ import edu.java.scrapper.dto.LastLinkUpdate;
 import edu.java.scrapper.dto.response.stackoverflow.StackoverflowQuestionInfo;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class StackoverflowDataFetcher extends AbstractDataFetcher implements LinkUpdatesFetcher {
 
     private static final Pattern QUESTION_PATTERN = Pattern
         .compile("^https://stackoverflow.com/questions/(\\d+)(/[\\w-]*)?$");
 
     private final StackoverflowClient stackoverflowClient;
-
-    public StackoverflowDataFetcher(StackoverflowClient client) {
-        this.stackoverflowClient = client;
-    }
 
     @Override
     public LastLinkUpdate getLastUpdate(String url) {

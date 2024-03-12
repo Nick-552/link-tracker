@@ -15,6 +15,14 @@ public class StackoverflowClient extends AbstractJsonWebClient {
         super(webClientBuilder, baseUrl);
     }
 
+    public <T> T getResponse(String uri, Class<T> tClass) {
+        return webClient.get()
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(tClass)
+            .block();
+    }
+
     public StackoverflowQuestionResponse getQuestionResponse(String questionId) {
         String questionUri = QUESTION_URI.formatted(questionId);
         return getResponse(questionUri, StackoverflowQuestionResponse.class);

@@ -2,6 +2,7 @@ package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.client.github.GithubClient;
 import edu.java.scrapper.client.stackoverflow.StackoverflowClient;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +12,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Configuration
+@Log4j2
 public class ClientConfig {
 
     private static final String UNAUTHORIZED = "unauthorized";
+
+    private static final String GITHUB_TOKEN_PROBLEM = """
+
+        -------------------------------------------------------------
+        Github token is invalid or not set
+        Set valid github auth token to GITHUB_AUTH_TOKEN env variable
+        This will improve scheduler performance
+        -------------------------------------------------------------
+        """;
 
     @Bean
     public GithubClient githubClient(
@@ -33,8 +44,11 @@ public class ClientConfig {
                 .doOnError(Throwable.class, throwable -> {
                     if (throwable.getMessage().equals(UNAUTHORIZED)) {
                         webClientBuilder.defaultHeaders(httpHeaders -> httpHeaders.remove(HttpHeaders.AUTHORIZATION));
+                        log.warn(GITHUB_TOKEN_PROBLEM);
                     }
                 }).onErrorComplete().block();
+        } else {
+            log.warn(GITHUB_TOKEN_PROBLEM);
         }
         return new GithubClient(webClientBuilder, baseUrl);
     }

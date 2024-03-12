@@ -1,4 +1,4 @@
-package edu.java.scrapper.client;
+package edu.java.bot.client;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
