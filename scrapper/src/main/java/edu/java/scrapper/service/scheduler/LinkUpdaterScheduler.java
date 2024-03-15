@@ -33,7 +33,9 @@ public class LinkUpdaterScheduler {
         links.forEach(link -> {
             var infoService = updateInfoServiceProvider.provide(link.url());
             var lastRealUpdate = infoService.getLastUpdate(link.url());
+            log.info("Checking update for {}", link.url());
             if (lastRealUpdate.isAfter(link.lastCheckAt()) || lastRealUpdate.isAfter(link.lastUpdatedAt())) {
+                log.info("Updating {}", link.url());
                 var updateInfo = infoService.getUpdateInformation(link.url());
                 var update = new LinkUpdate(
                     link.id(),

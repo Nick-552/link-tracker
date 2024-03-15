@@ -1,9 +1,9 @@
 package edu.java.scrapper.service.update;
 
-import jakarta.annotation.PostConstruct;
+import edu.java.scrapper.model.LinkType;
 import java.net.URI;
 import java.time.OffsetDateTime;
-import edu.java.scrapper.model.LinkType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public interface UpdateInfoService {
 
@@ -13,7 +13,7 @@ public interface UpdateInfoService {
 
     LinkType linkType();
 
-    @PostConstruct
+    @Autowired
     default void init(UpdateInfoServiceProvider provider) {
         provider.register(linkType(), this);
     }

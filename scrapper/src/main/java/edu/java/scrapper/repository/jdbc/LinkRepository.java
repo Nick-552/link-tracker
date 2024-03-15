@@ -16,6 +16,8 @@ public class LinkRepository {
 
     private final JdbcClient jdbcClient;
 
+    private static final String SELECT_BY_URL = "SELECT * FROM links WHERE url = ?";
+
     @Transactional
     public List<Link> findAllOrderedByLastCheckTime(int limit, Duration minTimeSinceLastUpdate) {
         return jdbcClient.sql("""
@@ -42,22 +44,21 @@ public class LinkRepository {
     @Transactional
     public Link findByUrl(URI url) {
         return jdbcClient
-            .sql("SELECT * FROM links WHERE url = ?")
-            .params(url)
+            .sql(SELECT_BY_URL)
+            .params(url.toString())
             .query(Link.class)
             .single();
     }
 
     @Transactional
     public Link add(URI url, OffsetDateTime updatedAt) {
-        // check if url not exists
-        if (jdbcClient.sql("SELECT * from links WHERE url = :url").param(url).query(Link.class).list().isEmpty()) {
+        if (jdbcClient.sql(SELECT_BY_URL).params(url.toString()).query(Link.class).list().isEmpty()) {
             jdbcClient
                 .sql("INSERT INTO links (url, last_updated_at, last_check_at) VALUES (?, ?, ?)")
-                .params(List.of(url, updatedAt, OffsetDateTime.now()))
+                .params(url.toString(), updatedAt, OffsetDateTime.now())
                 .update();
         }
-        return jdbcClient.sql("SELECT * FROM links WHERE url = :url").param(url).query(Link.class).single();
+        return findByUrl(url);
     }
 
     @Transactional

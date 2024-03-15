@@ -1,13 +1,15 @@
 package edu.java.scrapper.service.update.github;
 
+import edu.java.scrapper.model.LinkType;
 import edu.java.scrapper.service.fetcher.GithubDataFetcher;
 import edu.java.scrapper.service.update.UpdateInfo;
 import edu.java.scrapper.service.update.UpdateInfoService;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
-import edu.java.scrapper.model.LinkType;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class GithubRepoUpdateInfoService implements UpdateInfoService {
 
@@ -20,7 +22,7 @@ public class GithubRepoUpdateInfoService implements UpdateInfoService {
 
     @Override
     public UpdateInfo getUpdateInformation(URI url) {
-        return null;
+        return new UpdateInfo("Страница была обновлена", getLastUpdate(url));
     }
 
     @Override

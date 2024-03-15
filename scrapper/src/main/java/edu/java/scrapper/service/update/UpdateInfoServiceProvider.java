@@ -1,11 +1,11 @@
 package edu.java.scrapper.service.update;
 
 import edu.java.scrapper.exception.UnsupportedUrlException;
+import edu.java.scrapper.model.LinkType;
 import edu.java.scrapper.util.LinkResolver;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import edu.java.scrapper.model.LinkType;
 import org.springframework.stereotype.Service;
 
 @Service
