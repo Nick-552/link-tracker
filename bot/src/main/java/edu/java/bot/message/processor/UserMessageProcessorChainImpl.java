@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.handlers.UpdateHandlerLogger;
-import edu.java.bot.provider.HandlerProvider;
+import edu.java.bot.handler.HandlerProvider;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

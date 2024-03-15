@@ -6,9 +6,12 @@ import edu.java.bot.dto.request.scrapper.RemoveLinkRequest;
 import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.dto.response.scrapper.LinkResponse;
 import edu.java.bot.dto.response.scrapper.LinksListResponse;
-import edu.java.bot.exception.ApiException;
+import edu.java.bot.exception.ScrapperApiException;
+import edu.java.bot.storage.ChatLinksStorage;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -17,7 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ScrapperClient extends AbstractJsonWebClient {
+public class ScrapperClient extends AbstractJsonWebClient implements ChatLinksStorage {
 
     private static final String TG_CHAT_URI = "/tg-chat/{id}";
 
@@ -86,16 +89,24 @@ public class ScrapperClient extends AbstractJsonWebClient {
     private static Mono<ClientResponse> exchangeFilterResponseProcessor(ClientResponse response) {
         HttpStatusCode status = response.statusCode();
         if (status.isError()) {
-            return response.bodyToMono(ApiErrorResponse.class)
-                .flatMap(
-                    apiErrorResponse -> Mono.error(
-                        new ApiException(
-                            apiErrorResponse.code(),
-                            apiErrorResponse.description(),
-                            apiErrorResponse.exceptionMessage()
+            try {
+                return response.bodyToMono(ApiErrorResponse.class)
+                    .flatMap(
+                        apiErrorResponse -> Mono.error(
+                            new ScrapperApiException(apiErrorResponse)
                         )
+                    );
+            } catch (Exception e) {
+                throw new ScrapperApiException(
+                    new ApiErrorResponse(
+                        "Сервер не отвечает",
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "UnknownException",
+                        "Check server response",
+                        List.of()
                     )
                 );
+            }
         }
         return Mono.just(response);
     }

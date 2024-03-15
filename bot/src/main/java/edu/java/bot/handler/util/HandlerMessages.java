@@ -1,10 +1,14 @@
 package edu.java.bot.handler.util;
 
+import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.Command;
+import java.util.List;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class HandlerMessages {
+
+    public static final String DELIMITER = "\n\n";
 
     public static final String DEFAULT_MESSAGE = """
         Я тебя не совсем понимаю, используй доступные команды.
@@ -27,15 +31,10 @@ public class HandlerMessages {
         HELP_MESSAGE = sb.toString();
     }
 
-    public static final String USER_NOT_REGISTERED_YET_MESSAGE = "Пользователь еще не зарегистрирован";
-
     public static final String NO_LINKS_MESSAGE = "Нет отслеживаемых ссылок";
 
     public static final String LINKS_LIST = "Список отслеживаемых ссылок:\n\n";
 
-    public static final String ALREADY_REGISTERED_MESSAGE = """
-        Пользователь уже зарегистрирован или при регистрации возникла ошибка
-        """;
 
     @SuppressWarnings("checkstyle:LineLength")
     private static final String START_TEXT = """
@@ -55,8 +54,6 @@ public class HandlerMessages {
         /%1$s https://github.com/Nick-552/link-tracker
         """;
 
-    private static final String INVALID_LINK_MESSAGE = "Ссылка имеет некорректный вид: %s";
-
     private static final String LINK_ADDED_MESSAGE = "Ссылка для отслеживания добавлена: %s";
 
     private static final String LINK_NOT_ADDED_MESSAGE = "Ссылка <%s> не добавлена по причине: %s";
@@ -69,6 +66,8 @@ public class HandlerMessages {
         Такой ссылки нет в списке отслеживаемых или возникла ошибка при удалении ссылки из списка: %s
         """;
 
+    private static final String ERROR_MESSAGE = "Возникла ошибка: %s";
+
     public static String getLinkNotAddedMessage(String url, String cause) {
         return LINK_NOT_ADDED_MESSAGE.formatted(url, cause);
     }
@@ -77,16 +76,20 @@ public class HandlerMessages {
         return LINK_NOT_ADDED_MESSAGE.formatted(url, "неизвестна");
     }
 
+    public static String getLinksList(List<String> links) {
+        var sb = new StringBuilder(LINKS_LIST);
+        for (var link: links) {
+            sb.append(link).append("\n");
+        }
+        return sb.toString();
+    }
+
     public static String getStartText(String name) {
         return START_TEXT.formatted(name);
     }
 
     public static String getTrackExplanation(String trackOrUntrack) {
         return TRACK_EXPLANATION.formatted(trackOrUntrack);
-    }
-
-    public static String getInvalidLinkMessage(String url) {
-        return INVALID_LINK_MESSAGE.formatted(url);
     }
 
     public static String getLinkAddedMessage(String url) {
@@ -99,5 +102,21 @@ public class HandlerMessages {
 
     public static String getNoSuchLinkMessage(String url) {
         return NO_SUCH_LINK_MESSAGE.formatted(url);
+    }
+
+    public static SendMessage createErrorMessage(Object chatId, String... messages) {
+        var sb = new StringBuilder();
+        for (var message: messages) {
+            sb.append(message).append(DELIMITER);
+        }
+        return createMessage(chatId, ERROR_MESSAGE.formatted(sb.toString().strip()));
+    }
+
+    public static SendMessage createMessage(Object chatId, String... messages) {
+        var sb = new StringBuilder();
+        for (var message: messages) {
+            sb.append(message).append(DELIMITER);
+        }
+        return new SendMessage(chatId, sb.toString().strip());
     }
 }

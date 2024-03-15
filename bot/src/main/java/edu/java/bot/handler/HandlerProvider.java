@@ -1,11 +1,11 @@
-package edu.java.bot.provider;
+package edu.java.bot.handler;
 
 import edu.java.bot.handler.handlers.commands.HelpUpdateHandler;
 import edu.java.bot.handler.handlers.commands.ListUpdateHandler;
 import edu.java.bot.handler.handlers.commands.StartUpdateHandler;
 import edu.java.bot.handler.handlers.commands.TrackUpdateHandler;
 import edu.java.bot.handler.handlers.commands.UntrackUpdateHandler;
-import edu.java.bot.storage.UserLinksStorageService;
+import edu.java.bot.storage.ChatLinksStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class HandlerProvider {
 
-    private final UserLinksStorageService storageService;
+    private final ChatLinksStorage chatLinksStorage;
 
     public StartUpdateHandler getStartUpdateHandler() {
-        return new StartUpdateHandler(storageService);
+        return new StartUpdateHandler(chatLinksStorage);
     }
 
     public HelpUpdateHandler getHelpUpdateHandler() {
@@ -24,14 +24,14 @@ public class HandlerProvider {
     }
 
     public TrackUpdateHandler getTrackUpdateHandler() {
-        return new TrackUpdateHandler(storageService);
+        return new TrackUpdateHandler(chatLinksStorage);
     }
 
     public UntrackUpdateHandler getUntrackUpdateHandler() {
-        return new UntrackUpdateHandler(storageService);
+        return new UntrackUpdateHandler(chatLinksStorage);
     }
 
     public ListUpdateHandler getListUpdateHandler() {
-        return new ListUpdateHandler(storageService);
+        return new ListUpdateHandler(chatLinksStorage);
     }
 }

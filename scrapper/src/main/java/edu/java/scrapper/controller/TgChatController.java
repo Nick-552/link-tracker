@@ -1,7 +1,7 @@
 package edu.java.scrapper.controller;
 
 import edu.java.scrapper.dto.response.ApiErrorResponse;
-import edu.java.scrapper.service.TgChatsService;
+import edu.java.scrapper.service.tgchats.TgChatsService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;

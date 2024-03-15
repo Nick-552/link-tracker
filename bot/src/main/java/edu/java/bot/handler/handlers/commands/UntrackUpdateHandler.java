@@ -3,25 +3,25 @@ package edu.java.bot.handler.handlers.commands;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.Command;
+import edu.java.bot.dto.request.scrapper.RemoveLinkRequest;
+import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
-import edu.java.bot.storage.UserLinksStorageService;
+import edu.java.bot.storage.ChatLinksStorage;
+import java.net.URI;
 import java.util.Optional;
-import static edu.java.bot.handler.util.HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE;
+import lombok.RequiredArgsConstructor;
+import static edu.java.bot.handler.util.HandlerMessages.createErrorMessage;
+import static edu.java.bot.handler.util.HandlerMessages.createMessage;
 import static edu.java.bot.handler.util.HandlerMessages.getLinkRemovedMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getNoSuchLinkMessage;
 import static edu.java.bot.handler.util.HandlerMessages.getTrackExplanation;
 import static edu.java.bot.handler.util.HandlerUtils.isCommand;
 
+@RequiredArgsConstructor
 public class UntrackUpdateHandler extends UpdateHandlerWithNext {
 
-    private final UserLinksStorageService linksStorageService;
-
-    public UntrackUpdateHandler(UserLinksStorageService linksStorageService) {
-        this.linksStorageService = linksStorageService;
-    }
+    private final ChatLinksStorage chatLinksStorage;
 
     @Override
     public boolean supports(Update update) {
@@ -33,23 +33,21 @@ public class UntrackUpdateHandler extends UpdateHandlerWithNext {
         long chatID = HandlerUtils.chatID(update);
         var tokens = HandlerUtils.text(update).split(" ");
         User user = HandlerUtils.user(update);
-        if (!linksStorageService.isRegistered(user)) {
+        if (tokens.length != 2) {
             return Optional.of(
-                new SendMessage(chatID, USER_NOT_REGISTERED_YET_MESSAGE)
-            );
-        } else if (tokens.length != 2) {
-            return Optional.of(
-                new SendMessage(chatID, getTrackExplanation(Command.UNTRACK.getCommand()))
+                createMessage(chatID, getTrackExplanation(Command.UNTRACK.getCommand()))
             );
         }
         String link = tokens[1];
-        if (linksStorageService.removeLink(user, link)) {
+        try {
+            chatLinksStorage.removeLink(chatID, new RemoveLinkRequest(URI.create(link)));
             return Optional.of(
-                new SendMessage(chatID, getLinkRemovedMessage(link))
+                createMessage(chatID, getLinkRemovedMessage(link))
+            );
+        } catch (ScrapperApiException e) {
+            return Optional.of(
+                createErrorMessage(chatID, e.getApiErrorResponse().description())
             );
         }
-        return Optional.of(
-            new SendMessage(chatID, getNoSuchLinkMessage(link))
-        );
     }
 }

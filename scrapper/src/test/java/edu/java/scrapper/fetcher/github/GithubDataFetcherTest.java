@@ -1,15 +1,17 @@
-package edu.java.scrapper.data.fetcher.github;
+package edu.java.scrapper.fetcher.github;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.github.GithubClient;
-import edu.java.scrapper.data.fetcher.AbstractDataFetcher;
-import edu.java.scrapper.dto.LastLinkUpdate;
 import edu.java.scrapper.dto.response.github.GithubRateInfo;
 import edu.java.scrapper.dto.response.github.GithubRepoInfo;
+import java.net.URI;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
+import edu.java.scrapper.exception.UnsupportedUrlException;
+import edu.java.scrapper.service.fetcher.GithubDataFetcher;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +36,8 @@ class GithubDataFetcherTest {
     int resetInt = 1708986679;
     String owner = "nick";
     String name = "tracker";
-    String fullName = owner + "/" + name;
+    String fullName = "/" + owner + "/" + name;
+    String host = "https://github.com";
     OffsetDateTime lastActivityDateTime = OffsetDateTime.parse(lastActivityDateTimeString);
     OffsetDateTime reset = OffsetDateTime.ofInstant(
             Instant.ofEpochSecond(resetInt),
@@ -53,7 +56,7 @@ class GithubDataFetcherTest {
 
     @BeforeEach
     void setUpStubs() {
-        stubFor(get("/repos/" + fullName)
+        stubFor(get("/repos" + fullName)
             .willReturn(okJson("""
                 {
                     "some_properties": "asfas",
@@ -79,36 +82,21 @@ class GithubDataFetcherTest {
             )));
     }
 
-    @Test
-    @SneakyThrows
-    void getLastUpdate() {
-        String url = "https://github.com/" + fullName;
-        var expectedUpdate = new LastLinkUpdate(url, lastActivityDateTime);
-        var actualUpdate = githubDataFetcher.getLastUpdate(url);
-        assertThat(actualUpdate).isEqualTo(expectedUpdate);
-    }
 
     @Test
     @SneakyThrows
-    void getGithubRepoInfo() {
+    void getGithubRepoInfo_whenOk_shouldReturnExpectedInfo() {
         var expectedInfo = new GithubRepoInfo(lastActivityDateTime, fullName);
-        var actualInfo = githubDataFetcher.getRepoInfo(owner, name);
+        var actualInfo = githubDataFetcher.getRepoInfo(URI.create(host + fullName));
         assertThat(actualInfo).isEqualTo(expectedInfo);
     }
 
     @Test
     @SneakyThrows
     void getLastUpdate_onStatusError_shouldThrowWebClientResponseException() {
-        String url = "https://github.com/" + "wrong-address/will-be-not-found-or-smth";
+        String stringUrl = host + "/wrong-address/will-be-not-found-or-smth";
         AssertionsForClassTypes.assertThatExceptionOfType(WebClientResponseException.class)
-            .isThrownBy(() -> githubDataFetcher.getLastUpdate(url));
-    }
-
-    @Test
-    @SneakyThrows
-    void getRepoInfo_onStatusError_shouldThrowWebClientResponseException() {
-       AssertionsForClassTypes.assertThatExceptionOfType(WebClientResponseException.class)
-           .isThrownBy(() -> githubDataFetcher.getRepoInfo("wrong", "address"));
+            .isThrownBy(() -> githubDataFetcher.getRepoInfo(URI.create(stringUrl)));
     }
 
     @ParameterizedTest
@@ -119,8 +107,8 @@ class GithubDataFetcherTest {
     })
     @EmptySource
     void getLastUpdate_whenInvalidUrl_shouldThrowUnsupportedUrlException(String url) {
-        assertThatExceptionOfType(AbstractDataFetcher.UnsupportedUrlException.class)
-            .isThrownBy(() -> githubDataFetcher.getLastUpdate(url));
+        assertThatExceptionOfType(UnsupportedUrlException.class)
+            .isThrownBy(() -> githubDataFetcher.getRepoInfo(URI.create(url)));
     }
 
     @Test

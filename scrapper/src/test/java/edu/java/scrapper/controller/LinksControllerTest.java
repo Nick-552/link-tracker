@@ -4,7 +4,7 @@ import edu.java.scrapper.dto.request.AddLinkRequest;
 import edu.java.scrapper.dto.request.RemoveLinkRequest;
 import edu.java.scrapper.dto.response.LinkResponse;
 import edu.java.scrapper.dto.response.LinksListResponse;
-import edu.java.scrapper.service.LinksService;
+import edu.java.scrapper.service.links.LinksService;
 import java.net.URI;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -45,7 +45,7 @@ class LinksControllerTest {
     @Test
     @SneakyThrows
     void getLinks_shouldReturnCorrectOkResponse_whenRequestIsCorrectAndProcessedSuccessfully() {
-        Mockito.when(linksService.getLinks(CHAT_ID)).thenReturn(
+        Mockito.when(linksService.getLinksForChatId(CHAT_ID)).thenReturn(
             new LinksListResponse(
                 List.of(
                     new LinkResponse(CHAT_ID, URI.create("url"))
@@ -65,7 +65,7 @@ class LinksControllerTest {
     void addLink_shouldReturnCorrectOkResponse_whenRequestIsCorrectAndProcessedSuccessfully() {
         var link = "link";
         var request = new AddLinkRequest(URI.create(link));
-        Mockito.when(linksService.addLink(CHAT_ID, request))
+        Mockito.when(linksService.addLinkToChat(CHAT_ID, request))
             .thenReturn(new LinkResponse(1L, URI.create(link)));
         mvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +81,7 @@ class LinksControllerTest {
     void removeLink_shouldReturnCorrectOkResponse_whenRequestIsCorrectAndProcessedSuccessfully() {
         var link = "link";
         var request = new RemoveLinkRequest(URI.create(link));
-        Mockito.when(linksService.removeLink(CHAT_ID, request))
+        Mockito.when(linksService.removeLinkFromChat(CHAT_ID, request))
             .thenReturn(new LinkResponse(1L, URI.create(link)));
         mvc.perform(delete(PATH)
                 .contentType(MediaType.APPLICATION_JSON)

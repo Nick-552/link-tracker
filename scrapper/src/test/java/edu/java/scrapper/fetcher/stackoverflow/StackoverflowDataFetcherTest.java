@@ -1,11 +1,12 @@
-package edu.java.scrapper.data.fetcher.stackoverflow;
+package edu.java.scrapper.fetcher.stackoverflow;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.stackoverflow.StackoverflowClient;
-import edu.java.scrapper.data.fetcher.AbstractDataFetcher;
-import edu.java.scrapper.dto.LastLinkUpdate;
 import edu.java.scrapper.dto.response.stackoverflow.StackoverflowQuestionInfo;
+import edu.java.scrapper.exception.UnsupportedUrlException;
+import edu.java.scrapper.service.fetcher.StackoverflowDataFetcher;
+import java.net.URI;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -26,6 +27,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 @WireMockTest
 class StackoverflowDataFetcherTest {
+
+    String host = "https://stackoverflow.com";
+    String questionUrl = host + "/questions";
 
     static StackoverflowDataFetcher stackoverflowDataFetcher;
     OffsetDateTime lastActivityDateTime = OffsetDateTime
@@ -63,34 +67,18 @@ class StackoverflowDataFetcherTest {
 
     @Test
     @SneakyThrows
-    void getLastUpdate() {
-        String url = "https://stackoverflow.com/questions/123/title-of-question";
-        var expectedUpdate = new LastLinkUpdate(url, lastActivityDateTime);
-        var actualUpdate = stackoverflowDataFetcher.getLastUpdate(url);
-        assertThat(actualUpdate).isEqualTo(expectedUpdate);
-    }
-
-    @Test
-    @SneakyThrows
     void getQuestionInfo_whenOk() {
         var expectedInfo = new StackoverflowQuestionInfo(lastActivityDateTime, 7);
-        var actualInfo = stackoverflowDataFetcher.getQuestionInfo("123");
+        var actualInfo = stackoverflowDataFetcher.getQuestionInfo(URI.create(questionUrl + "/123"));
         assertThat(actualInfo).isEqualTo(expectedInfo);
     }
 
-    @Test
-    @SneakyThrows
-    void getLastUpdate_onStatusError_shouldThrowWebClientResponseException() {
-        String url = "https://stackoverflow.com/" + "questions/25645634/no-question-on-this-address";
-        assertThatExceptionOfType(WebClientResponseException.class)
-            .isThrownBy(() -> stackoverflowDataFetcher.getLastUpdate(url));
-    }
 
     @Test
     @SneakyThrows
     void getQuestionInfo_onStatusError_shouldThrowWebClientResponseException() {
         assertThatExceptionOfType(WebClientResponseException.class)
-            .isThrownBy(() -> stackoverflowDataFetcher.getQuestionInfo("25645634"));
+            .isThrownBy(() -> stackoverflowDataFetcher.getQuestionInfo(URI.create(questionUrl + "/25645634/no-stub-there")));
     }
 
     @ParameterizedTest
@@ -101,8 +89,8 @@ class StackoverflowDataFetcherTest {
         "https://stackoverflow.com/questions/incompatibleclasschangeerror-with-eclipse-jetty",
     })
     @EmptySource
-    void getLastUpdate_whenInvalidUrl_shouldThrowUnsupportedUrlException(String url) {
-        assertThatExceptionOfType(AbstractDataFetcher.UnsupportedUrlException.class)
-            .isThrownBy(() -> stackoverflowDataFetcher.getLastUpdate(url));
+    void getQuestionInfo_whenInvalidUrl_shouldThrowUnsupportedUrlException(String url) {
+        assertThatExceptionOfType(UnsupportedUrlException.class)
+            .isThrownBy(() -> stackoverflowDataFetcher.getQuestionInfo(URI.create(url)));
     }
 }

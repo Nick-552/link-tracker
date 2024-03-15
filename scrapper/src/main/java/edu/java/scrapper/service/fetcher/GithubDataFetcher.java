@@ -1,11 +1,10 @@
-package edu.java.scrapper.data.fetcher.github;
+package edu.java.scrapper.service.fetcher;
 
 import edu.java.scrapper.client.github.GithubClient;
-import edu.java.scrapper.data.fetcher.AbstractDataFetcher;
-import edu.java.scrapper.data.fetcher.LinkUpdatesFetcher;
-import edu.java.scrapper.dto.LastLinkUpdate;
 import edu.java.scrapper.dto.response.github.GithubRateInfo;
 import edu.java.scrapper.dto.response.github.GithubRepoInfo;
+import edu.java.scrapper.exception.UnsupportedUrlException;
+import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GithubDataFetcher extends AbstractDataFetcher implements LinkUpdatesFetcher {
+public class GithubDataFetcher {
 
     private static final Pattern REPO_PATTERN = Pattern
         .compile("^https://github.com/([\\w-]+)/([\\w-]+)/?$");
@@ -24,18 +23,14 @@ public class GithubDataFetcher extends AbstractDataFetcher implements LinkUpdate
         return githubClient.getGithubRateInfo().rateInfo();
     }
 
-    @Override
-    public LastLinkUpdate getLastUpdate(String url) {
-        Matcher matcher = REPO_PATTERN.matcher(url);
+
+    public GithubRepoInfo getRepoInfo(URI url) {
+        Matcher matcher = REPO_PATTERN.matcher(url.toString());
         if (matcher.matches()) {
             var owner = matcher.group(1);
             var repo = matcher.group(2);
-            return new LastLinkUpdate(url, getRepoInfo(owner, repo).lastUpdate());
+            return githubClient.getRepoResponse(owner, repo);
         }
         throw new UnsupportedUrlException();
-    }
-
-    public GithubRepoInfo getRepoInfo(String owner, String repo) {
-        return githubClient.getRepoResponse(owner, repo);
     }
 }

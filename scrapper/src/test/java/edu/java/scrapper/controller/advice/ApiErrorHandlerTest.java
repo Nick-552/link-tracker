@@ -2,7 +2,7 @@ package edu.java.scrapper.controller.advice;
 
 import edu.java.scrapper.controller.LinksController;
 import edu.java.scrapper.exception.ApiException;
-import edu.java.scrapper.service.LinksService;
+import edu.java.scrapper.service.links.LinksService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class ApiErrorHandlerTest {
     @SneakyThrows
     void getLinks_shouldReturnApiErrorResponse_whenApiExceptionThrown() {
         var exception = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "description", "message");
-        Mockito.when(linksService.getLinks(CHAT_ID))
+        Mockito.when(linksService.getLinksForChatId(CHAT_ID))
             .thenThrow(exception);
         mvc.perform(
                 get(PATH)
@@ -56,7 +56,7 @@ class ApiErrorHandlerTest {
     @DisplayName("Exception thrown case")
     @SneakyThrows
     void getLinks_shouldReturn400ApiErrorResponse_whenExceptionThrown() {
-        Mockito.when(linksService.getLinks(CHAT_ID))
+        Mockito.when(linksService.getLinksForChatId(CHAT_ID))
             .thenThrow(new RuntimeException());
         mvc.perform(
             get(PATH)
