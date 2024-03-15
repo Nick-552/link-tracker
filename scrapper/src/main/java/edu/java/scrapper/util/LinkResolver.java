@@ -1,11 +1,11 @@
 package edu.java.scrapper.util;
 
 import edu.java.scrapper.exception.UnsupportedUrlException;
+import edu.java.scrapper.model.LinkType;
 import java.net.URI;
 import java.util.Map;
 import java.util.regex.Pattern;
 import lombok.experimental.UtilityClass;
-import edu.java.scrapper.model.LinkType;
 
 @UtilityClass
 public class LinkResolver {

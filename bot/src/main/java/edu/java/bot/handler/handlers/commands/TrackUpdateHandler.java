@@ -26,10 +26,8 @@ public class TrackUpdateHandler extends UpdateHandlerWithNext {
         return HandlerUtils.isCommand(update, Command.TRACK);
     }
 
-    @SuppressWarnings("checkstyle:ReturnCount")
     @Override
     protected Optional<AbstractSendRequest<? extends AbstractSendRequest<?>>> doHandle(Update update) {
-        var user = HandlerUtils.user(update);
         var chatID = HandlerUtils.chatID(update);
         var tokens = HandlerUtils.text(update).split(" ");
         if (tokens.length != 2) {
@@ -44,7 +42,11 @@ public class TrackUpdateHandler extends UpdateHandlerWithNext {
             );
         } catch (ScrapperApiException e) {
             return Optional.of(
-                createErrorMessage(chatID, e.getApiErrorResponse().description(), getTrackExplanation(Command.TRACK.getCommand()))
+                createErrorMessage(
+                    chatID,
+                    e.getApiErrorResponse().description(),
+                    getTrackExplanation(Command.TRACK.getCommand())
+                )
             );
         }
     }
