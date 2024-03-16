@@ -8,19 +8,17 @@ import edu.java.scrapper.dto.response.github.GithubRateInfo;
 import edu.java.scrapper.dto.response.github.GithubRepoInfo;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class GithubDataFetcher extends AbstractDataFetcher implements LinkUpdatesFetcher {
 
     private static final Pattern REPO_PATTERN = Pattern
         .compile("^https://github.com/([\\w-]+)/([\\w-]+)/?$");
 
     private final GithubClient githubClient;
-
-    public GithubDataFetcher(GithubClient githubClient) {
-        this.githubClient = githubClient;
-    }
 
     public GithubRateInfo getRateInfo() {
         return githubClient.getGithubRateInfo().rateInfo();
