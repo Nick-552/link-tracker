@@ -23,7 +23,7 @@ public class LinkUpdaterScheduler {
     private final ApplicationConfig applicationConfig;
     private final BotClient botClient;
 
-    @Scheduled(fixedDelayString = "${app.scheduler.interval}")
+    @Scheduled(fixedDelayString = "${app.scheduler.interval}", initialDelayString = "${app.scheduler.initial-delay}")
     public void update() {
         log.info("Updating...");
         var links = linksService.listStaleLinks(

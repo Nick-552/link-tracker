@@ -5,19 +5,24 @@ import edu.java.scrapper.dto.request.RemoveLinkRequest;
 import edu.java.scrapper.dto.response.LinkResponse;
 import edu.java.scrapper.dto.response.LinksListResponse;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
+import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.exception.LinkNotFoundException;
+import edu.java.scrapper.exception.UnsupportedUrlException;
 import edu.java.scrapper.model.ChatLink;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.repository.jdbc.ChatLinkRepository;
 import edu.java.scrapper.repository.jdbc.ChatRepository;
 import edu.java.scrapper.repository.jdbc.LinkRepository;
+import edu.java.scrapper.util.LinkResolver;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @Log4j2
@@ -46,9 +51,18 @@ public class LinksServiceJdbcImpl implements LinksService {
     @Override
     public LinkResponse addLinkToChat(Long chatId, AddLinkRequest addLinkRequest) {
         log.info("Add link {} to chat {}", addLinkRequest.link(), chatId);
+        try {
+            var linkType = LinkResolver.getLinkType(addLinkRequest.link());
+        } catch (Exception e) {
+            throw new UnsupportedUrlException();
+        }
         checkChatRegistered(chatId);
         var link = linkRepository.add(addLinkRequest.link(), OffsetDateTime.now());
-        chatLinkRepository.add(chatId, link.id());
+        try {
+            chatLinkRepository.add(chatId, link.id());
+        } catch (DataIntegrityViolationException e) {
+            throw new LinkAlreadyTrackedException();
+        }
         log.info("Added link {} to chat {}", addLinkRequest.link(), chatId);
         return link.toLinkResponse();
     }
@@ -85,7 +99,6 @@ public class LinksServiceJdbcImpl implements LinksService {
         var chatIds = chatLinkRepository.findAllByLinkId(link.id()).stream()
             .map(ChatLink::chatId)
             .toList();
-
         log.info("Found {} chat ids for link {}", chatIds.size(), link.url());
         return chatIds;
     }

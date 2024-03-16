@@ -13,7 +13,8 @@ public record ApplicationConfig(
 ) {
     public record Scheduler(
         boolean enable,
-        @NotNull Duration interval,
+        @NotNull Duration interval, // in milliseconds
+        @NotNull Duration initialDelay, // in milliseconds
         @NotNull Integer forceCheckDelay, // in minutes
         @NotNull Integer checkLimit) {
     }
