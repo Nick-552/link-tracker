@@ -1,5 +1,6 @@
 package edu.java.scrapper.repository.jdbc;
 
+import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.scrapper.model.Link;
 import java.net.URI;
 import java.time.Duration;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
     "BOT_API_CLIENT_BASE_URL=http://localhost:8090"
 })
-class LinkRepositoryTest {
+class LinkRepositoryTest extends IntegrationEnvironment {
 
     @Autowired
     private JdbcClient jdbcClient;
