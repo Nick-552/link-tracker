@@ -5,6 +5,7 @@ import edu.java.bot.dto.request.LinkUpdate;
 import edu.java.bot.exception.ApiException;
 import edu.java.bot.service.LinkUpdateNotificationService;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +39,7 @@ class ApiErrorHandlerTest {
     private static final LinkUpdate LINK_UPDATE = new LinkUpdate(
         1L,
         URI.create("url"),
+        OffsetDateTime.now().toString(),
         "description",
         List.of(CHAT_ID)
     );

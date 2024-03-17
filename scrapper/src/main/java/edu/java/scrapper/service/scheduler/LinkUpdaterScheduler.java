@@ -40,7 +40,7 @@ public class LinkUpdaterScheduler {
                 var update = new LinkUpdate(
                     link.id(),
                     link.url(),
-                    updateInfo.lastUpdate(),
+                    updateInfo.lastUpdate().toString(),
                     updateInfo.message(),
                     linksService.getChatIdsForLink(link)
                 );

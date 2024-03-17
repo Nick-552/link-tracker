@@ -22,11 +22,12 @@ public class ChatLinkRepository {
     }
 
     @Transactional
-    public int remove(Long chatId, Long linkId) {
+    public ChatLink remove(Long chatId, Long linkId) {
         return jdbcClient
-            .sql("DELETE FROM chats_links WHERE chat_id = ? AND link_id = ?")
+            .sql("DELETE FROM chats_links WHERE chat_id = ? AND link_id = ? RETURNING *")
             .params(chatId, linkId)
-            .update();
+            .query(ChatLink.class)
+            .single();
     }
 
     @Transactional

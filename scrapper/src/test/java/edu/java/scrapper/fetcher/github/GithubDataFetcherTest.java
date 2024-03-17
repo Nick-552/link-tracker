@@ -63,10 +63,11 @@ class GithubDataFetcherTest {
                     "full_name": "%s",
                     "other": "sfdgsdf",
                     "updated_at": "%s",
+                    "pushed_at": "%s",
                     "and_more": "fgsdfgsdfg",
                     "and_list": [12,2131,14,2134]
                 }
-                """.formatted(fullName, lastActivityDateTimeString)
+                """.formatted(fullName, lastActivityDateTimeString, lastActivityDateTimeString)
             )));
         stubFor(get("/rate_limit")
             .willReturn(okJson("""
@@ -86,7 +87,7 @@ class GithubDataFetcherTest {
     @Test
     @SneakyThrows
     void getGithubRepoInfo_whenOk_shouldReturnExpectedInfo() {
-        var expectedInfo = new GithubRepoInfo(lastActivityDateTime, fullName);
+        var expectedInfo = new GithubRepoInfo(lastActivityDateTime, lastActivityDateTime, fullName);
         var actualInfo = githubDataFetcher.getRepoInfo(URI.create(host + fullName));
         assertThat(actualInfo).isEqualTo(expectedInfo);
     }

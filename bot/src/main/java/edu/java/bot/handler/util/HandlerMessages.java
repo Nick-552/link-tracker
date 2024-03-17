@@ -56,25 +56,15 @@ public class HandlerMessages {
 
     private static final String LINK_ADDED_MESSAGE = "Ссылка для отслеживания добавлена: %s";
 
-    private static final String LINK_NOT_ADDED_MESSAGE = "Ссылка <%s> не добавлена по причине: %s";
-
     private static final String LINK_REMOVED_MESSAGE = """
         Ссылка для отслеживания удалена: %s
         """;
 
-    private static final String NO_SUCH_LINK_MESSAGE = """
-        Такой ссылки нет в списке отслеживаемых или возникла ошибка при удалении ссылки из списка: %s
+    private static final String INVALID_LINK_MESSAGE = """
+        Неверный формат ссылки
         """;
 
-    private static final String ERROR_MESSAGE = "Возникла ошибка: %s";
-
-    public static String getLinkNotAddedMessage(String url, String cause) {
-        return LINK_NOT_ADDED_MESSAGE.formatted(url, cause);
-    }
-
-    public static String getLinkNotAddedMessage(String url) {
-        return LINK_NOT_ADDED_MESSAGE.formatted(url, "неизвестна");
-    }
+    private static final String ERROR_MESSAGE = "Возникла ошибка:\n%s";
 
     public static String getLinksList(List<String> links) {
         var sb = new StringBuilder(LINKS_LIST);
@@ -100,8 +90,8 @@ public class HandlerMessages {
         return LINK_REMOVED_MESSAGE.formatted(url);
     }
 
-    public static String getNoSuchLinkMessage(String url) {
-        return NO_SUCH_LINK_MESSAGE.formatted(url);
+    public static String getInvalidLinkMessage() {
+        return INVALID_LINK_MESSAGE;
     }
 
     public static SendMessage createErrorMessage(Object chatId, String... messages) {

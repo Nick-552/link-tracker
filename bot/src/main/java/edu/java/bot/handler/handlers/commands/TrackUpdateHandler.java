@@ -13,6 +13,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import static edu.java.bot.handler.util.HandlerMessages.createErrorMessage;
 import static edu.java.bot.handler.util.HandlerMessages.createMessage;
+import static edu.java.bot.handler.util.HandlerMessages.getInvalidLinkMessage;
 import static edu.java.bot.handler.util.HandlerMessages.getLinkAddedMessage;
 import static edu.java.bot.handler.util.HandlerMessages.getTrackExplanation;
 
@@ -46,6 +47,13 @@ public class TrackUpdateHandler extends UpdateHandlerWithNext {
                     chatID,
                     e.getApiErrorResponse().description(),
                     getTrackExplanation(Command.TRACK.getCommand())
+                )
+            );
+        } catch (IllegalArgumentException e) {
+            return Optional.of(
+                createErrorMessage(
+                    chatID,
+                    getInvalidLinkMessage()
                 )
             );
         }

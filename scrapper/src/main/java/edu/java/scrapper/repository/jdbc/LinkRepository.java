@@ -19,7 +19,9 @@ public class LinkRepository {
     private static final String SELECT_BY_URL = "SELECT * FROM links WHERE url = ?";
 
     @Transactional
-    public List<Link> findAllOrderedByLastCheckTime(int limit, Duration minTimeSinceLastUpdate) {
+    public List<Link> findWithTimeSinceLastCheckLessThanGivenOrderedByLastCheckTime(
+        int limit, Duration minTimeSinceLastUpdate
+    ) {
         return jdbcClient.sql("""
             SELECT *
             FROM links

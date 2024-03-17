@@ -8,6 +8,7 @@ import java.util.List;
 public record LinkUpdate(
     @JsonProperty @NotNull Long id,
     @JsonProperty @NotNull URI url,
+    @JsonProperty @NotNull String updatedAt,
     @JsonProperty @NotNull String description,
     @JsonProperty @NotNull List<Long> tgChatIds
 ) {

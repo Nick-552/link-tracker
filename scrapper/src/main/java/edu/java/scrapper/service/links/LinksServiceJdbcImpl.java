@@ -73,7 +73,7 @@ public class LinksServiceJdbcImpl implements LinksService {
         checkChatRegistered(chatId);
         try {
             var link = linkRepository.findByUrl(removeLinkRequest.link()); // find link
-            if (chatLinkRepository.remove(chatId, link.id()) == 0) { // remove chat link
+            if (chatLinkRepository.remove(chatId, link.id()) == null) { // remove chat link
                 throw new LinkNotFoundException();
             }
             if (chatLinkRepository.findAllByLinkId(link.id()).isEmpty()) { // if no chat links
@@ -106,7 +106,10 @@ public class LinksServiceJdbcImpl implements LinksService {
     @Override
     public List<Link> listStaleLinks(int limit, Duration minTimeSinceLastCheck) {
         log.info("List stale links");
-        var links = linkRepository.findAllOrderedByLastCheckTime(limit, minTimeSinceLastCheck);
+        var links = linkRepository
+            .findWithTimeSinceLastCheckLessThanGivenOrderedByLastCheckTime(
+                limit, minTimeSinceLastCheck
+            );
         log.info("Found {} stale links", links.size());
         return links;
     }

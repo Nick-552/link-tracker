@@ -17,12 +17,12 @@ public class GithubRepoUpdateInfoService implements UpdateInfoService {
 
     @Override
     public OffsetDateTime getLastUpdate(URI url) {
-        return githubDataFetcher.getRepoInfo(url).lastUpdate();
+        return githubDataFetcher.getRepoInfo(url).lastPush();
     }
 
     @Override
     public UpdateInfo getUpdateInformation(URI url) {
-        return new UpdateInfo("Страница была обновлена", getLastUpdate(url));
+        return new UpdateInfo("Новый push", getLastUpdate(url));
     }
 
     @Override
