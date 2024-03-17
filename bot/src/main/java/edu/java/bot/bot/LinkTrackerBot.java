@@ -13,16 +13,26 @@ import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.message.processor.UserMessageProcessor;
-import edu.java.bot.utils.BotUtils;
 import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 @Log4j2
 @Component
+@Getter
 public class LinkTrackerBot extends TelegramBot implements UpdatesListener, AutoCloseable {
+
+    public final String about = "Бот для отслеживания изменений на страницах";
+
+    public final String name = "LinkTracker";
+
+    @SuppressWarnings("checkstyle:LineLength")
+    public final String description = "С помощью этого бота вы можете отслеживать обновление контента на таких страницах, как stackoverflow и GitHub.";
+
+    private final int botZoneOffset = 3;
 
     private final UserMessageProcessor userMessageProcessor;
 
@@ -56,9 +66,9 @@ public class LinkTrackerBot extends TelegramBot implements UpdatesListener, Auto
                     .toArray(BotCommand[]::new)
             )
         );
-        execute(new SetMyName().name(BotUtils.NAME));
-        execute(new SetMyShortDescription().description(BotUtils.ABOUT));
-        execute(new SetMyDescription().description(BotUtils.DESCRIPTION));
+        execute(new SetMyName().name(name));
+        execute(new SetMyShortDescription().description(about));
+        execute(new SetMyDescription().description(description));
         log.info("bot started and configured");
     }
 

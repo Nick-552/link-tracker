@@ -1,12 +1,15 @@
-package edu.java.bot.handler.util;
+package edu.java.bot.utils;
 
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.Command;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class HandlerMessages {
+public class MessagesUtils {
 
     public static final String DELIMITER = "\n\n";
 
@@ -108,5 +111,26 @@ public class HandlerMessages {
             sb.append(message).append(DELIMITER);
         }
         return new SendMessage(chatId, sb.toString().strip());
+    }
+
+    public static final String UPDATE = """
+        Обновление ссылки %s
+        Обновлена %s
+        Подробности:
+        %s
+        """;
+
+    public static SendMessage createUpdateMessage(
+        Object chatId,
+        URI link,
+        OffsetDateTime offsetDateTime,
+        String message
+    ) {
+        var date = offsetDateTime.toLocalDate();
+        var dateString = String.format("%02d.%02d.%s", date.getDayOfMonth(), date.getMonthValue(), date.getYear());
+        var time = offsetDateTime.toLocalTime().truncatedTo(ChronoUnit.SECONDS);
+        var offset = offsetDateTime.getOffset();
+        var timeString = String.format("%s в %s %s", dateString, time, offset);
+        return new SendMessage(chatId, UPDATE.formatted(link, timeString, message));
     }
 }

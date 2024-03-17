@@ -8,10 +8,10 @@ import org.mockito.Mockito;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_CHAT_ID;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
-import static edu.java.bot.handler.util.HandlerMessages.DEFAULT_MESSAGE;
-import static edu.java.bot.handler.util.HandlerMessages.I_DONT_LIKE_YOUR_UPDATE;
-import static edu.java.bot.handler.util.HandlerMessages.NO_SUCH_COMMAND_MESSAGE;
-import static edu.java.bot.handler.util.HandlerMessages.createMessage;
+import static edu.java.bot.utils.MessagesUtils.DEFAULT_MESSAGE;
+import static edu.java.bot.utils.MessagesUtils.I_DONT_LIKE_YOUR_UPDATE;
+import static edu.java.bot.utils.MessagesUtils.NO_SUCH_COMMAND_MESSAGE;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
 import static edu.java.bot.handler.util.HandlerUtils.defaultHandle;
 import static org.mockito.ArgumentMatchers.any;
 

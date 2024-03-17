@@ -9,9 +9,9 @@ import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.storage.ChatLinksStorage;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import static edu.java.bot.handler.util.HandlerMessages.createErrorMessage;
-import static edu.java.bot.handler.util.HandlerMessages.createMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getStartText;
+import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
+import static edu.java.bot.utils.MessagesUtils.getStartText;
 
 @RequiredArgsConstructor
 public class StartUpdateHandler extends UpdateHandlerWithNext {

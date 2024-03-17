@@ -11,11 +11,11 @@ import edu.java.bot.storage.ChatLinksStorage;
 import java.net.URI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import static edu.java.bot.handler.util.HandlerMessages.createErrorMessage;
-import static edu.java.bot.handler.util.HandlerMessages.createMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getInvalidLinkMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getLinkAddedMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getTrackExplanation;
+import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
+import static edu.java.bot.utils.MessagesUtils.getInvalidLinkMessage;
+import static edu.java.bot.utils.MessagesUtils.getLinkAddedMessage;
+import static edu.java.bot.utils.MessagesUtils.getTrackExplanation;
 
 @RequiredArgsConstructor
 public class TrackUpdateHandler extends UpdateHandlerWithNext {

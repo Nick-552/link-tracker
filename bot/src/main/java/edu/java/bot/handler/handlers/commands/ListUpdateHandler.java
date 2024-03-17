@@ -5,14 +5,14 @@ import com.pengrad.telegrambot.request.AbstractSendRequest;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
-import edu.java.bot.handler.util.HandlerMessages;
 import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.storage.ChatLinksStorage;
+import edu.java.bot.utils.MessagesUtils;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import static edu.java.bot.handler.util.HandlerMessages.createErrorMessage;
-import static edu.java.bot.handler.util.HandlerMessages.createMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getLinksList;
+import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
+import static edu.java.bot.utils.MessagesUtils.getLinksList;
 
 @RequiredArgsConstructor
 public class ListUpdateHandler extends UpdateHandlerWithNext {
@@ -31,7 +31,7 @@ public class ListUpdateHandler extends UpdateHandlerWithNext {
             var links = chatLinksStorage.getLinks(chatID);
             if (links.size() == 0) {
                 return Optional.of(
-                    createMessage(chatID, HandlerMessages.NO_LINKS_MESSAGE)
+                    createMessage(chatID, MessagesUtils.NO_LINKS_MESSAGE)
                 );
             } else {
                 var linksList = links.links().stream().map(linkResponse -> linkResponse.url().toString()).toList();

@@ -11,8 +11,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_CHAT_ID;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
-import static edu.java.bot.handler.util.HandlerMessages.HELP_MESSAGE;
-import static edu.java.bot.handler.util.HandlerMessages.createMessage;
+import static edu.java.bot.utils.MessagesUtils.HELP_MESSAGE;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HelpUpdateHandlerTest {

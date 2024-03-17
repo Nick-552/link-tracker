@@ -1,19 +1,20 @@
 package edu.java.bot.service;
 
-import com.pengrad.telegrambot.TelegramBot;
+import edu.java.bot.bot.LinkTrackerBot;
 import edu.java.bot.dto.request.LinkUpdate;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import static edu.java.bot.utils.BotUtils.createUpdateMessage;
+import static edu.java.bot.utils.MessagesUtils.createUpdateMessage;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class LinkUpdateNotificationService {
 
-    private final TelegramBot telegramBot;
+    private final LinkTrackerBot linkTrackerBot;
 
     public void notifyAllWithLinkUpdate(LinkUpdate linkUpdate) {
         log.info("notifying all with link update: {}", linkUpdate);
@@ -25,8 +26,17 @@ public class LinkUpdateNotificationService {
                 "notifying to chatId {} that link {} was updated: {} ",
                 chatId, linkUpdate.url(), linkUpdate.description()
             );
-            telegramBot.execute(
-                createUpdateMessage(chatId, url, OffsetDateTime.parse(updatedAt), description)
+            linkTrackerBot.execute(
+                createUpdateMessage(
+                    chatId,
+                    url,
+                    OffsetDateTime
+                        .parse(updatedAt)
+                        .withOffsetSameInstant(
+                            ZoneOffset.ofHours(linkTrackerBot.getBotZoneOffset())
+                        ),
+                    description
+                )
             );
         }
     }

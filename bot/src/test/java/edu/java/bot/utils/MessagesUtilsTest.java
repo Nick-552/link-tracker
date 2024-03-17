@@ -7,7 +7,7 @@ import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BotUtilsTest {
+class MessagesUtilsTest {
 
     @Test
     void createUpdateMessage() {
@@ -15,9 +15,7 @@ class BotUtilsTest {
         URI link = URI.create("http://example.com");
         OffsetDateTime updatedAt = OffsetDateTime.of(2022, 6, 20, 16, 28, 1, 0, ZoneOffset.ofHours(3));
         String message = "Test message";
-
-        SendMessage result = BotUtils.createUpdateMessage(chatId, link, updatedAt, message);
-
+        SendMessage result = MessagesUtils.createUpdateMessage(chatId, link, updatedAt, message);
         assertThat(result.getParameters().get("chat_id")).isEqualTo(chatId);
         assertThat(result.getParameters().get("text")).isEqualTo(
             """
