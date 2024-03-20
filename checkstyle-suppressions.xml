@@ -6,5 +6,5 @@
 
 <suppressions>
     <suppress checks=".*"
-        files="**/domain/jooq/**"/>
+        files="edu[/\\]java[/\\]scrapper[/\\]domain[/\\]jooq[/\\]"/>
 </suppressions>
