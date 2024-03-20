@@ -71,8 +71,8 @@ public class MessagesUtils {
 
     public static String getLinksList(List<String> links) {
         var sb = new StringBuilder(LINKS_LIST);
-        for (var link: links) {
-            sb.append(link).append("\n");
+        for (int i = 0; i < links.size(); i++) {
+            sb.append(i + 1).append(". ").append(links.get(i)).append("\n");
         }
         return sb.toString();
     }
@@ -102,7 +102,7 @@ public class MessagesUtils {
         for (var message: messages) {
             sb.append(message).append(DELIMITER);
         }
-        return createMessage(chatId, ERROR_MESSAGE.formatted(sb.toString().strip()));
+        return createMessage(chatId, ERROR_MESSAGE.formatted(sb.toString().strip())).disableWebPagePreview(true);
     }
 
     public static SendMessage createMessage(Object chatId, String... messages) {

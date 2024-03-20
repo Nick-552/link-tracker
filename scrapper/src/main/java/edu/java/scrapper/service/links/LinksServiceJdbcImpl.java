@@ -1,5 +1,8 @@
 package edu.java.scrapper.service.links;
 
+import edu.java.scrapper.domain.jdbc.ChatLinkRepository;
+import edu.java.scrapper.domain.jdbc.ChatRepository;
+import edu.java.scrapper.domain.jdbc.LinkRepository;
 import edu.java.scrapper.dto.request.AddLinkRequest;
 import edu.java.scrapper.dto.request.RemoveLinkRequest;
 import edu.java.scrapper.dto.response.LinkResponse;
@@ -10,9 +13,6 @@ import edu.java.scrapper.exception.LinkNotFoundException;
 import edu.java.scrapper.exception.UnsupportedUrlException;
 import edu.java.scrapper.model.ChatLink;
 import edu.java.scrapper.model.Link;
-import edu.java.scrapper.repository.jdbc.ChatLinkRepository;
-import edu.java.scrapper.repository.jdbc.ChatRepository;
-import edu.java.scrapper.repository.jdbc.LinkRepository;
 import edu.java.scrapper.util.LinkResolver;
 import java.time.Duration;
 import java.time.OffsetDateTime;

@@ -1,11 +1,11 @@
 package edu.java.scrapper.service.tgchats;
 
+import edu.java.scrapper.domain.jdbc.ChatLinkRepository;
+import edu.java.scrapper.domain.jdbc.ChatRepository;
+import edu.java.scrapper.domain.jdbc.LinkRepository;
 import edu.java.scrapper.exception.ChatAlreadyRegisteredException;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.ChatLink;
-import edu.java.scrapper.repository.jdbc.ChatLinkRepository;
-import edu.java.scrapper.repository.jdbc.ChatRepository;
-import edu.java.scrapper.repository.jdbc.LinkRepository;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

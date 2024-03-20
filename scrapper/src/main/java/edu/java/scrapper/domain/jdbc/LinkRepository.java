@@ -1,4 +1,4 @@
-package edu.java.scrapper.repository.jdbc;
+package edu.java.scrapper.domain.jdbc;
 
 import edu.java.scrapper.model.Link;
 import java.net.URI;

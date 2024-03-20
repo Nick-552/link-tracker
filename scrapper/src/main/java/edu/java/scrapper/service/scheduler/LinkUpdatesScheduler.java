@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableScheduling
 @RequiredArgsConstructor
-public class LinkUpdaterScheduler {
+public class LinkUpdatesScheduler {
 
     private final UpdateInfoServiceProvider updateInfoServiceProvider;
     private final LinksService linksService;

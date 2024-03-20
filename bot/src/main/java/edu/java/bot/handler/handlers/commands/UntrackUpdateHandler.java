@@ -36,6 +36,7 @@ public class UntrackUpdateHandler extends UpdateHandlerWithNext {
         if (tokens.length != 2) {
             return Optional.of(
                 createMessage(chatID, getTrackExplanation(Command.UNTRACK.getCommand()))
+                    .disableWebPagePreview(true)
             );
         }
         String link = tokens[1];

@@ -37,6 +37,7 @@ public class ListUpdateHandler extends UpdateHandlerWithNext {
                 var linksList = links.links().stream().map(linkResponse -> linkResponse.url().toString()).toList();
                 return Optional.of(
                     createMessage(chatID, getLinksList(linksList))
+                        .disableWebPagePreview(true)
                 );
             }
         } catch (ScrapperApiException e) {
