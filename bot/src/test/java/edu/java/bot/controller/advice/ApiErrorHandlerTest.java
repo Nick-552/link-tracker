@@ -72,7 +72,11 @@ class ApiErrorHandlerTest {
     void sendUpdatedLink_shouldReturn400ApiErrorResponse_whenExceptionThrown() {
         // no body and no media type header
         mvc.perform(post(PATH))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isUnsupportedMediaType());
+        mvc.perform(
+            post(PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest());
     }
 
     @Test

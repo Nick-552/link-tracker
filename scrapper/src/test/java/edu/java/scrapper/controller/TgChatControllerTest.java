@@ -19,7 +19,6 @@ class TgChatControllerTest {
 
     private static final String PATH = "/tg-chat/%s".formatted(CHAT_ID);
 
-
     @Autowired
     private MockMvc mvc;
 
