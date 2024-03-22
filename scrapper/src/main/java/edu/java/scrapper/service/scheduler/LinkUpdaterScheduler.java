@@ -3,6 +3,7 @@ package edu.java.scrapper.service.scheduler;
 import edu.java.scrapper.client.bot.BotClient;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.dto.request.bot.LinkUpdate;
+import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.links.LinksService;
 import edu.java.scrapper.service.update.UpdateInfoServiceProvider;
 import java.time.Duration;
@@ -31,24 +32,32 @@ public class LinkUpdaterScheduler {
             Duration.ofMinutes(applicationConfig.scheduler().forceCheckDelay())
         );
         links.forEach(link -> {
-            var infoService = updateInfoServiceProvider.provide(link.url());
-            var lastRealUpdate = infoService.getLastUpdate(link.url());
-            log.info("Checking update for {}", link.url());
-            if (lastRealUpdate.isAfter(link.lastCheckAt()) || lastRealUpdate.isAfter(link.lastUpdatedAt())) {
-                log.info("Updating {}", link.url());
-                var updateInfo = infoService.getUpdateInformation(link.url());
-                var update = new LinkUpdate(
-                    link.id(),
-                    link.url(),
-                    updateInfo.lastUpdate().toString(),
-                    updateInfo.message(),
-                    linksService.getChatIdsForLink(link)
-                );
-                var updated = link.getUpdated(lastRealUpdate);
-                botClient.sendUpdate(update);
-                linksService.updateLink(updated);
+            try {
+                updateLink(link);
+            } catch (Exception e) {
+                log.info("Failed to update {}", link.url(), e);
             }
         });
         log.info("Update finished");
+    }
+
+    public void updateLink(Link link) {
+        var infoService = updateInfoServiceProvider.provide(link.url());
+        var lastRealUpdate = infoService.getLastUpdate(link.url());
+        log.info("Checking update for {}", link.url());
+        Link updatedLink = link.getUpdated(lastRealUpdate);
+        if (lastRealUpdate.isAfter(link.lastCheckAt()) || lastRealUpdate.isAfter(link.lastUpdatedAt())) {
+            log.info("Updating {}", link.url());
+            var updateInfo = infoService.getUpdateInformation(link.url());
+            var update = new LinkUpdate(
+                link.id(),
+                link.url(),
+                updateInfo.lastUpdate().toString(),
+                updateInfo.message(),
+                linksService.getChatIdsForLink(link)
+            );
+            botClient.sendUpdate(update);
+        }
+        linksService.updateLink(updatedLink);
     }
 }
