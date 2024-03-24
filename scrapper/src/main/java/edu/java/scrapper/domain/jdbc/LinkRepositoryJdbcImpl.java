@@ -6,6 +6,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -44,12 +45,12 @@ public class LinkRepositoryJdbcImpl implements LinkRepository {
     }
 
     @Override
-    public Link findByUrl(URI url) {
+    public Optional<Link> findByUrl(URI url) {
         return jdbcClient
             .sql(SELECT_BY_URL)
             .params(url.toString())
             .query(Link.class)
-            .single();
+            .optional();
     }
 
     @Override
@@ -60,7 +61,7 @@ public class LinkRepositoryJdbcImpl implements LinkRepository {
                 .params(url.toString(), updatedAt, OffsetDateTime.now())
                 .update();
         }
-        return findByUrl(url);
+        return findByUrl(url).get();
     }
 
     @Override

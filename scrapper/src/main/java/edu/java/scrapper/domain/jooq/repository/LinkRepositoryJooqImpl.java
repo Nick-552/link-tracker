@@ -6,6 +6,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import static edu.java.scrapper.domain.jooq.tables.Links.LINKS;
@@ -35,19 +36,19 @@ public class LinkRepositoryJooqImpl implements LinkRepository {
     }
 
     @Override
-    public Link findByUrl(URI url) {
+    public Optional<Link> findByUrl(URI url) {
         return dslContext.selectFrom(LINKS)
             .where(LINKS.URL.eq(String.valueOf(url)))
-            .fetchOneInto(Link.class);
+            .fetchOptionalInto(Link.class);
     }
 
     @Override
     public Link add(URI url, OffsetDateTime updatedAt) {
-        return dslContext.insertInto(LINKS, LINKS.URL, LINKS.LAST_UPDATED_AT, LINKS.LAST_CHECK_AT)
+        dslContext.insertInto(LINKS, LINKS.URL, LINKS.LAST_UPDATED_AT, LINKS.LAST_CHECK_AT)
             .values(String.valueOf(url), updatedAt, OffsetDateTime.now())
             .onConflictDoNothing()
-            .returning()
-            .fetchOneInto(Link.class);
+            .execute();
+        return findByUrl(url).get();
     }
 
     @Override

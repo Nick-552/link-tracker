@@ -9,6 +9,7 @@ import edu.java.scrapper.dto.response.LinkResponse;
 import edu.java.scrapper.dto.response.LinksListResponse;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.exception.LinkAlreadyTrackedException;
+import edu.java.scrapper.exception.LinkNotFoundException;
 import edu.java.scrapper.model.ChatLink;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.update.UpdateInfoServiceProvider;
@@ -59,10 +60,12 @@ public class LinksServiceRepoImpl extends LinksService {
         var updateInfoService = updateInfoServiceProvider.provide(url);
         var lastUpdate = updateInfoService.getLastUpdate(url);
         var link = linkRepository.add(url, lastUpdate);
+        log.info("Link added to database: {}", link);
         if (chatLinkRepository.existsByChatIdAndLinkId(chatId, link.id())) {
             log.info("Link {} already tracked in chat {}", url, chatId);
             throw new LinkAlreadyTrackedException();
         }
+        log.info("Adding link {} to chat {}", url, chatId);
         chatLinkRepository.add(chatId, link.id());
         log.info("Added link {} to chat {}", url, chatId);
         return link.toLinkResponse();
@@ -72,7 +75,11 @@ public class LinksServiceRepoImpl extends LinksService {
     public LinkResponse removeLinkFromChat(Long chatId, RemoveLinkRequest removeLinkRequest) {
         log.info("Remove link {} from chat {}", removeLinkRequest.link(), chatId);
         checkChatRegistered(chatId);
-        var link = linkRepository.findByUrl(removeLinkRequest.link());
+        var link = linkRepository.findByUrl(removeLinkRequest.link()).orElseThrow(LinkNotFoundException::new);
+        if (!chatLinkRepository.existsByChatIdAndLinkId(chatId, link.id())) {
+            log.info("Link {} not tracked in chat {}", removeLinkRequest.link(), chatId);
+            throw new LinkNotFoundException();
+        }
         chatLinkRepository.remove(chatId, link.id());
         if (chatLinkRepository.findAllByLinkId(link.id()).isEmpty()) { // if no chat links
             linkRepository.remove(link.id()); // remove link

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface LinkRepository {
@@ -18,7 +19,7 @@ public interface LinkRepository {
     Link findById(Long id);
 
     @Transactional
-    Link findByUrl(URI url);
+    Optional<Link> findByUrl(URI url);
 
     @Transactional
     Link add(URI url, OffsetDateTime updatedAt);
