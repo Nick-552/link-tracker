@@ -1,19 +1,19 @@
 package edu.java.scrapper.domain.jdbc;
 
+import edu.java.scrapper.domain.ChatLinkRepository;
 import edu.java.scrapper.model.ChatLink;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class ChatLinkRepository {
+public class ChatLinkRepositoryJdbcImpl implements ChatLinkRepository {
 
     private final JdbcClient jdbcClient;
 
-    @Transactional
+    @Override
     public void add(Long chatId, Long linkId) {
         jdbcClient
             .sql("INSERT INTO chats_links (chat_id, link_id) VALUES (?, ?)")
@@ -21,7 +21,7 @@ public class ChatLinkRepository {
             .update();
     }
 
-    @Transactional
+    @Override
     public ChatLink remove(Long chatId, Long linkId) {
         return jdbcClient
             .sql("DELETE FROM chats_links WHERE chat_id = ? AND link_id = ? RETURNING *")
@@ -30,7 +30,7 @@ public class ChatLinkRepository {
             .single();
     }
 
-    @Transactional
+    @Override
     public void removeAllByChatId(Long chatId) {
         jdbcClient
             .sql("DELETE FROM chats_links WHERE chat_id = ?")
@@ -38,7 +38,7 @@ public class ChatLinkRepository {
             .update();
     }
 
-    @Transactional
+    @Override
     public List<ChatLink> findAllByChatId(Long chatId) {
         return jdbcClient.sql("SELECT * FROM chats_links WHERE chat_id = ?")
             .params(chatId)
@@ -46,11 +46,20 @@ public class ChatLinkRepository {
             .list();
     }
 
-    @Transactional
+    @Override
     public List<ChatLink> findAllByLinkId(Long linkId) {
         return jdbcClient.sql("SELECT * FROM chats_links WHERE link_id = ?")
             .params(linkId)
             .query(ChatLink.class)
             .list();
+    }
+
+    @Override
+    public boolean existsByChatIdAndLinkId(Long chatId, Long linkId) {
+        return jdbcClient
+            .sql("SELECT EXISTS(SELECT 1 FROM chats_links WHERE chat_id = ? AND link_id = ?)")
+            .params(chatId, linkId)
+            .query(Boolean.class)
+            .single();
     }
 }

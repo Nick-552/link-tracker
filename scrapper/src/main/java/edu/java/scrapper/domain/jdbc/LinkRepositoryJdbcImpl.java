@@ -1,5 +1,6 @@
 package edu.java.scrapper.domain.jdbc;
 
+import edu.java.scrapper.domain.LinkRepository;
 import edu.java.scrapper.model.Link;
 import java.net.URI;
 import java.time.Duration;
@@ -8,17 +9,16 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class LinkRepository {
+public class LinkRepositoryJdbcImpl implements LinkRepository {
 
     private final JdbcClient jdbcClient;
 
     private static final String SELECT_BY_URL = "SELECT * FROM links WHERE url = ?";
 
-    @Transactional
+    @Override
     public List<Link> findWithTimeSinceLastCheckLessThanGivenOrderedByLastCheckTime(
         int limit, Duration minTimeSinceLastUpdate
     ) {
@@ -34,7 +34,7 @@ public class LinkRepository {
             .list();
     }
 
-    @Transactional
+    @Override
     public Link findById(Long id) {
         return jdbcClient
             .sql("SELECT * FROM links WHERE id = ?")
@@ -43,7 +43,7 @@ public class LinkRepository {
             .single();
     }
 
-    @Transactional
+    @Override
     public Link findByUrl(URI url) {
         return jdbcClient
             .sql(SELECT_BY_URL)
@@ -52,7 +52,7 @@ public class LinkRepository {
             .single();
     }
 
-    @Transactional
+    @Override
     public Link add(URI url, OffsetDateTime updatedAt) {
         if (jdbcClient.sql(SELECT_BY_URL).params(url.toString()).query(Link.class).list().isEmpty()) {
             jdbcClient
@@ -63,7 +63,7 @@ public class LinkRepository {
         return findByUrl(url);
     }
 
-    @Transactional
+    @Override
     public void update(Link link) {
         jdbcClient
             .sql("UPDATE links SET last_updated_at = :updatedAt, last_check_at = :checkedAt WHERE id = :id")
@@ -73,7 +73,7 @@ public class LinkRepository {
             .update();
     }
 
-    @Transactional
+    @Override
     public void remove(Long id) {
         jdbcClient
             .sql("DELETE FROM links WHERE id = :id")

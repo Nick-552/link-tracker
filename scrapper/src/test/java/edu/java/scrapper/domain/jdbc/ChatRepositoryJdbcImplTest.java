@@ -1,6 +1,7 @@
 package edu.java.scrapper.domain.jdbc;
 
 import edu.java.scrapper.IntegrationEnvironment;
+import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
@@ -21,13 +21,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @TestPropertySource(properties = {
     "BOT_API_CLIENT_BASE_URL=http://localhost:8090"
 })
-class ChatRepositoryTest extends IntegrationEnvironment {
+class ChatRepositoryJdbcImplTest extends IntegrationEnvironment {
 
     @Autowired
     private JdbcClient jdbcClient;
 
     @Autowired
-    private ChatRepository chatRepository;
+    private ChatRepositoryJdbcImpl chatRepositoryJdbcImpl;
 
     List<Chat> addChats() {
         var chats = List.of(
@@ -49,11 +49,11 @@ class ChatRepositoryTest extends IntegrationEnvironment {
         var chats = jdbcClient.sql("SELECT * FROM chats").query(Chat.class).list();
         assertThat(chats).isEmpty();
         var chat = new Chat(1L);
-        chatRepository.add(chat);
+        chatRepositoryJdbcImpl.add(chat);
         chats = jdbcClient.sql("SELECT * FROM chats").query(Chat.class).list();
         assertThat(chats).containsExactly(chat);
         var chat2 = new Chat(1L);
-        assertThatExceptionOfType(DataIntegrityViolationException.class).isThrownBy(() -> chatRepository.add(chat2));
+        assertThatExceptionOfType(DataIntegrityViolationException.class).isThrownBy(() -> chatRepositoryJdbcImpl.add(chat2));
     }
 
     @Test
@@ -63,7 +63,7 @@ class ChatRepositoryTest extends IntegrationEnvironment {
         var chats = addChats();
         var chats1 = jdbcClient.sql("SELECT * FROM chats").query(Chat.class).list();
         assertThat(chats1).containsExactlyElementsOf(chats);
-        chatRepository.removeById(1L);
+        chatRepositoryJdbcImpl.removeById(1L);
         var chats2 = jdbcClient.sql("SELECT * FROM chats").query(Chat.class).list();
         assertThat(chats2).containsExactlyElementsOf(chats.subList(1, chats.size()));
     }
@@ -73,7 +73,7 @@ class ChatRepositoryTest extends IntegrationEnvironment {
     @Rollback
     void findAll() {
         var expected = addChats();
-        var actual = chatRepository.findAll();
+        var actual = chatRepositoryJdbcImpl.findAll();
         assertThat(actual).containsExactlyElementsOf(expected);
     }
 
@@ -82,8 +82,9 @@ class ChatRepositoryTest extends IntegrationEnvironment {
     @Rollback
     void findById() {
         addChats();
-        var chat = chatRepository.findById(1L);
+        var chat = chatRepositoryJdbcImpl.findById(1L);
         assertThat(chat).isNotNull();
-        assertThatExceptionOfType(EmptyResultDataAccessException.class).isThrownBy(() -> chatRepository.findById(4L));
+        assertThatExceptionOfType(ChatNotRegisteredException.class)
+            .isThrownBy(() -> chatRepositoryJdbcImpl.findById(4L));
     }
 }

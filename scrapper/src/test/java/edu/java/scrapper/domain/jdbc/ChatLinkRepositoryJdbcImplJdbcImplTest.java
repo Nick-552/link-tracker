@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @TestPropertySource(properties = {
     "BOT_API_CLIENT_BASE_URL=http://localhost:8090"
 })
-class ChatLinkRepositoryTest extends IntegrationEnvironment {
+class ChatLinkRepositoryJdbcImplJdbcImplTest extends IntegrationEnvironment {
 
     @Autowired
-    private ChatLinkRepository chatLinkRepository;
+    private ChatLinkRepositoryJdbcImpl chatLinkRepositoryJdbcImpl;
 
     @Autowired
     private JdbcClient jdbcClient;
@@ -55,7 +55,7 @@ class ChatLinkRepositoryTest extends IntegrationEnvironment {
     @Rollback
     void add_whenLinkNotExistOrChatNotExist_shouldThrowDataIntegrityViolationException() {
         assertThatExceptionOfType(DataIntegrityViolationException.class)
-            .isThrownBy(() ->chatLinkRepository.add(1L, 1L));
+            .isThrownBy(() -> chatLinkRepositoryJdbcImpl.add(1L, 1L));
     }
 
     @Test
@@ -64,13 +64,13 @@ class ChatLinkRepositoryTest extends IntegrationEnvironment {
     void add() {
         setUpChats();
         var keys = setUpLinks();
-        chatLinkRepository.add(1L, keys.get(0));
-        chatLinkRepository.add(1L, keys.get(1));
-        chatLinkRepository.add(2L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(1));
+        chatLinkRepositoryJdbcImpl.add(2L, keys.get(0));
         var actual = jdbcClient.sql("SELECT * FROM chats_links").query(ChatLink.class).list();
         assertThat(actual).hasSize(3);
         assertThatExceptionOfType(DataIntegrityViolationException.class)
-            .isThrownBy(() -> chatLinkRepository.add(1L, keys.get(0)));
+            .isThrownBy(() -> chatLinkRepositoryJdbcImpl.add(1L, keys.get(0)));
     }
 
     @Test
@@ -78,11 +78,11 @@ class ChatLinkRepositoryTest extends IntegrationEnvironment {
     @Rollback
     void remove() {
         var keys = setUpChatsAndLinks();
-        chatLinkRepository.add(1L, keys.get(0));
-        chatLinkRepository.add(1L, keys.get(1));
-        chatLinkRepository.add(2L, keys.get(0));
-        chatLinkRepository.add(2L, keys.get(1));
-        var removed =chatLinkRepository.remove(1L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(1));
+        chatLinkRepositoryJdbcImpl.add(2L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(2L, keys.get(1));
+        var removed = chatLinkRepositoryJdbcImpl.remove(1L, keys.get(0));
         assertThat(removed.chatId()).isEqualTo(1L);
         assertThat(removed.linkId()).isEqualTo(keys.get(0));
         var remaining = jdbcClient.sql("SELECT * FROM chats_links").query(ChatLink.class).list();
@@ -94,10 +94,10 @@ class ChatLinkRepositoryTest extends IntegrationEnvironment {
     @Rollback
     void removeAllByChatId() {
         var keys = setUpChatsAndLinks();
-        chatLinkRepository.add(1L, keys.get(0));
-        chatLinkRepository.add(1L, keys.get(1));
-        chatLinkRepository.add(2L, keys.get(0));
-        chatLinkRepository.removeAllByChatId(1L);
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(1));
+        chatLinkRepositoryJdbcImpl.add(2L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.removeAllByChatId(1L);
         var remaining = jdbcClient.sql("SELECT * FROM chats_links").query(ChatLink.class).list();
         assertThat(remaining).hasSize(1);
         assertThat(remaining.getFirst().chatId()).isEqualTo(2L);
@@ -109,10 +109,10 @@ class ChatLinkRepositoryTest extends IntegrationEnvironment {
     @Rollback
     void findAllByChatId() {
         var keys = setUpChatsAndLinks();
-        chatLinkRepository.add(1L, keys.get(0));
-        chatLinkRepository.add(1L, keys.get(1));
-        chatLinkRepository.add(2L, keys.get(0));
-        var links = chatLinkRepository.findAllByChatId(2L);
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(1));
+        chatLinkRepositoryJdbcImpl.add(2L, keys.get(0));
+        var links = chatLinkRepositoryJdbcImpl.findAllByChatId(2L);
         assertThat(links).hasSize(1);
         assertThat(links.getFirst().chatId()).isEqualTo(2L);
         assertThat(links.getFirst().linkId()).isEqualTo(keys.getFirst());
@@ -123,10 +123,10 @@ class ChatLinkRepositoryTest extends IntegrationEnvironment {
     @Rollback
     void findAllByLinkId() {
         var keys = setUpChatsAndLinks();
-        chatLinkRepository.add(1L, keys.get(0));
-        chatLinkRepository.add(1L, keys.get(1));
-        chatLinkRepository.add(2L, keys.get(0));
-        var links = chatLinkRepository.findAllByLinkId(keys.get(1));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(0));
+        chatLinkRepositoryJdbcImpl.add(1L, keys.get(1));
+        chatLinkRepositoryJdbcImpl.add(2L, keys.get(0));
+        var links = chatLinkRepositoryJdbcImpl.findAllByLinkId(keys.get(1));
         assertThat(links).hasSize(1);
         assertThat(links.getFirst().chatId()).isEqualTo(1L);
         assertThat(links.getFirst().linkId()).isEqualTo(keys.get(1));

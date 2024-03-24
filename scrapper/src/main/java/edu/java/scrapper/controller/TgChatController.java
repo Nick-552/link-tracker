@@ -1,6 +1,7 @@
 package edu.java.scrapper.controller;
 
 import edu.java.scrapper.dto.response.ApiErrorResponse;
+import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.service.tgchats.TgChatsService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class TgChatController {
     @PostMapping
     @Schema(implementation = ApiErrorResponse.class)
     public void registerChat(@PathVariable Long id) {
-        tgChatsService.registerChat(id);
+        tgChatsService.registerChat(new Chat(id));
     }
 
     @DeleteMapping

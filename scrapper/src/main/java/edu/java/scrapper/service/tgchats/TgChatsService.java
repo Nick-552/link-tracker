@@ -1,5 +1,6 @@
 package edu.java.scrapper.service.tgchats;
 
+import edu.java.scrapper.model.Chat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface TgChatsService {
 
     @Transactional
-    void registerChat(Long id);
+    void registerChat(Chat chat);
 
     @Transactional
     void deleteChat(Long id);

@@ -1,5 +1,6 @@
 package edu.java.scrapper.controller;
 
+import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.service.tgchats.TgChatsService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class TgChatControllerTest {
     @Test
     @SneakyThrows
     void registerChat_shouldReturnCorrectOkResponse_whenRequestIsCorrectAndProcessedSuccessfully() {
-        Mockito.doNothing().when(tgChatsService).registerChat(CHAT_ID);
+        Mockito.doNothing().when(tgChatsService).registerChat(new Chat(CHAT_ID));
         mvc.perform(post(PATH))
             .andExpect(status().isOk());
     }

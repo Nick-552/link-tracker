@@ -5,13 +5,13 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.github.GithubClient;
 import edu.java.scrapper.dto.response.github.GithubRateInfo;
 import edu.java.scrapper.dto.response.github.GithubRepoInfo;
+import edu.java.scrapper.exception.InvalidUrlException;
+import edu.java.scrapper.exception.UnsupportedUrlException;
+import edu.java.scrapper.service.fetcher.GithubDataFetcher;
 import java.net.URI;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-
-import edu.java.scrapper.exception.UnsupportedUrlException;
-import edu.java.scrapper.service.fetcher.GithubDataFetcher;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +21,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -96,7 +95,7 @@ class GithubDataFetcherTest {
     @SneakyThrows
     void getLastUpdate_onStatusError_shouldThrowWebClientResponseException() {
         String stringUrl = host + "/wrong-address/will-be-not-found-or-smth";
-        AssertionsForClassTypes.assertThatExceptionOfType(WebClientResponseException.class)
+        AssertionsForClassTypes.assertThatExceptionOfType(InvalidUrlException.class)
             .isThrownBy(() -> githubDataFetcher.getRepoInfo(URI.create(stringUrl)));
     }
 

@@ -6,7 +6,6 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-
     <include file="chats_scheme.sql"/>
     <include file="links_scheme.sql"/>
     <include file="chats_links_scheme.sql"/>

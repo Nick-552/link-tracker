@@ -1,21 +1,19 @@
 package edu.java.scrapper.service.tgchats;
 
-import edu.java.scrapper.domain.jdbc.ChatLinkRepository;
-import edu.java.scrapper.domain.jdbc.ChatRepository;
-import edu.java.scrapper.domain.jdbc.LinkRepository;
+import edu.java.scrapper.domain.ChatLinkRepository;
+import edu.java.scrapper.domain.ChatRepository;
+import edu.java.scrapper.domain.LinkRepository;
 import edu.java.scrapper.exception.ChatAlreadyRegisteredException;
+import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.ChatLink;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
 
-@Service
 @Log4j2
 @RequiredArgsConstructor
-public class TgChatsServiceJdbcImpl implements TgChatsService {
+public class TgChatsServiceRepoImpl implements TgChatsService {
 
     private final LinkRepository linkRepository;
 
@@ -24,20 +22,23 @@ public class TgChatsServiceJdbcImpl implements TgChatsService {
     private final ChatRepository chatRepository;
 
     @Override
-    public void registerChat(Long id) {
-        log.info("Registering chat {}", id);
-        try {
-            chatRepository.add(new Chat(id));
-            log.info("Chat {} registered", id);
-        } catch (DataIntegrityViolationException e) {
-            log.info("Chat {} already registered", id);
+    public void registerChat(Chat chat) {
+        log.info("Registering chat {}", chat);
+        if (chatRepository.existsById(chat.id())) {
+            log.info("Chat {} already registered", chat);
             throw new ChatAlreadyRegisteredException();
         }
+        chatRepository.add(chat);
+        log.info("Chat {} registered", chat);
     }
 
     @Override
     public void deleteChat(Long id) {
         log.info("Deleting chat {}", id);
+        if (!chatRepository.existsById(id)) {
+            log.info("Chat {} not registered", id);
+            throw new ChatNotRegisteredException();
+        }
         var linkIds = chatLinkRepository.findAllByChatId(id).stream().map(ChatLink::linkId).collect(Collectors.toSet());
         chatLinkRepository.removeAllByChatId(id);
         chatRepository.removeById(id);

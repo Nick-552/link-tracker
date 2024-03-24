@@ -3,7 +3,10 @@ package edu.java.scrapper.client.github;
 import edu.java.scrapper.client.AbstractJsonWebClient;
 import edu.java.scrapper.dto.response.github.GithubRateResponse;
 import edu.java.scrapper.dto.response.github.GithubRepoInfo;
+import edu.java.scrapper.exception.InvalidUrlException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 public class GithubClient extends AbstractJsonWebClient {
 
@@ -22,7 +25,10 @@ public class GithubClient extends AbstractJsonWebClient {
         return webClient.get()
             .uri(uri)
             .retrieve()
-            .bodyToMono(tClass)
+            .onStatus(
+                statusCode -> statusCode.isSameCodeAs(HttpStatus.NOT_FOUND),
+                clientResponse -> Mono.error(new InvalidUrlException())
+            ).bodyToMono(tClass)
             .block();
     }
 

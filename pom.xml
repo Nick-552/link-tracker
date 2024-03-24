@@ -236,9 +236,9 @@
                     <version>${jacoco-maven-plugin.version}</version>
                     <configuration>
                         <excludes>
-                            <exclude>edu.java.scrapper.domain.jooq</exclude>
+                            <exclude>edu/java/scrapper/domain/jooq</exclude>
                             <exclude>**/configuration/*</exclude>
-                            <exclude>edu.java.scrapperjooq</exclude>
+                            <exclude>edu/java/scrapperjooq</exclude>
                         </excludes>
                     </configuration>
                     <executions>

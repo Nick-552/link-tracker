@@ -1,21 +1,20 @@
 package edu.java.scrapper.domain.jdbc;
 
+import edu.java.scrapper.domain.ChatRepository;
+import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-@Log4j2
-public class ChatRepository {
+public class ChatRepositoryJdbcImpl implements ChatRepository {
 
     private final JdbcClient jdbcClient;
 
-    @Transactional
+    @Override
     public void add(Chat chat) {
         jdbcClient
             .sql("INSERT INTO chats (id) VALUES (?)")
@@ -23,7 +22,7 @@ public class ChatRepository {
             .update();
     }
 
-    @Transactional
+    @Override
     public void removeById(Long id) {
         jdbcClient
             .sql("DELETE FROM chats WHERE id = ?")
@@ -31,7 +30,7 @@ public class ChatRepository {
             .update();
     }
 
-    @Transactional
+    @Override
     public List<Chat> findAll() {
         return jdbcClient
             .sql("SELECT * FROM chats")
@@ -39,11 +38,21 @@ public class ChatRepository {
             .list();
     }
 
+    @Override
     public Chat findById(Long id) {
         return jdbcClient
             .sql("SELECT * FROM chats WHERE id = ?")
             .params(id)
             .query(Chat.class)
+            .optional()
+            .orElseThrow(ChatNotRegisteredException::new);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return jdbcClient.sql("SELECT EXISTS(SELECT id FROM chats WHERE id = ?)")
+            .params(id)
+            .query(Boolean.class)
             .single();
     }
 }
