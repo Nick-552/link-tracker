@@ -16,6 +16,7 @@ import edu.java.scrapper.service.update.UpdateInfoServiceProvider;
 import java.time.Duration;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 public class LinksServiceRepoImpl extends LinksService {
@@ -39,6 +40,7 @@ public class LinksServiceRepoImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public LinksListResponse getLinksForChatId(Long chatId) {
         log.info("Get links for chat {}", chatId);
         checkChatRegistered(chatId);
@@ -53,6 +55,7 @@ public class LinksServiceRepoImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public LinkResponse addLinkToChat(Long chatId, AddLinkRequest addLinkRequest) {
         var url = addLinkRequest.link();
         log.info("Add link {} to chat {}", url, chatId);
@@ -72,6 +75,7 @@ public class LinksServiceRepoImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public LinkResponse removeLinkFromChat(Long chatId, RemoveLinkRequest removeLinkRequest) {
         log.info("Remove link {} from chat {}", removeLinkRequest.link(), chatId);
         checkChatRegistered(chatId);
@@ -90,6 +94,7 @@ public class LinksServiceRepoImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public void updateLink(Link link) {
         log.info("Update link {}", link.url());
         linkRepository.update(link);
@@ -97,6 +102,7 @@ public class LinksServiceRepoImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public List<Long> getChatIdsForLink(Link link) {
         log.info("Get chat ids for link {}", link.url());
         return chatLinkRepository

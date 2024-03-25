@@ -10,6 +10,7 @@ import edu.java.scrapper.model.ChatLink;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class TgChatsServiceRepoImpl implements TgChatsService {
     private final ChatRepository chatRepository;
 
     @Override
+    @Transactional
     public void registerChat(Chat chat) {
         log.info("Registering chat {}", chat);
         if (chatRepository.existsById(chat.id())) {
@@ -33,6 +35,7 @@ public class TgChatsServiceRepoImpl implements TgChatsService {
     }
 
     @Override
+    @Transactional
     public void deleteChat(Long id) {
         log.info("Deleting chat {}", id);
         if (!chatRepository.existsById(id)) {
