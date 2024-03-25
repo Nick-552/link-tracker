@@ -60,8 +60,7 @@ public class LinksServiceRepoImpl extends LinksService {
         var url = addLinkRequest.link();
         log.info("Add link {} to chat {}", url, chatId);
         checkChatRegistered(chatId);
-        var updateInfoService = updateInfoServiceProvider.provide(url);
-        var lastUpdate = updateInfoService.getLastUpdate(url);
+        var lastUpdate = getLastUpdate(url);
         var link = linkRepository.add(url, lastUpdate);
         log.info("Link added to database: {}", link);
         if (chatLinkRepository.existsByChatIdAndLinkId(chatId, link.id())) {
