@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -13,7 +12,6 @@ public class ChatLinkRepository {
 
     private final JdbcClient jdbcClient;
 
-    @Transactional
     public void add(Long chatId, Long linkId) {
         jdbcClient
             .sql("INSERT INTO chats_links (chat_id, link_id) VALUES (?, ?)")
@@ -21,7 +19,6 @@ public class ChatLinkRepository {
             .update();
     }
 
-    @Transactional
     public ChatLink remove(Long chatId, Long linkId) {
         return jdbcClient
             .sql("DELETE FROM chats_links WHERE chat_id = ? AND link_id = ? RETURNING *")
@@ -30,7 +27,6 @@ public class ChatLinkRepository {
             .single();
     }
 
-    @Transactional
     public void removeAllByChatId(Long chatId) {
         jdbcClient
             .sql("DELETE FROM chats_links WHERE chat_id = ?")
@@ -38,7 +34,6 @@ public class ChatLinkRepository {
             .update();
     }
 
-    @Transactional
     public List<ChatLink> findAllByChatId(Long chatId) {
         return jdbcClient.sql("SELECT * FROM chats_links WHERE chat_id = ?")
             .params(chatId)
@@ -46,7 +41,6 @@ public class ChatLinkRepository {
             .list();
     }
 
-    @Transactional
     public List<ChatLink> findAllByLinkId(Long linkId) {
         return jdbcClient.sql("SELECT * FROM chats_links WHERE link_id = ?")
             .params(linkId)

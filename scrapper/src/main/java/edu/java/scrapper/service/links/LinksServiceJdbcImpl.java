@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Log4j2
@@ -37,6 +37,7 @@ public class LinksServiceJdbcImpl implements LinksService {
 
 
     @Override
+    @Transactional
     public LinksListResponse getLinksForChatId(Long chatId) {
         log.info("Get links for chat {}", chatId);
         checkChatRegistered(chatId);
@@ -49,6 +50,7 @@ public class LinksServiceJdbcImpl implements LinksService {
     }
 
     @Override
+    @Transactional
     public LinkResponse addLinkToChat(Long chatId, AddLinkRequest addLinkRequest) {
         log.info("Add link {} to chat {}", addLinkRequest.link(), chatId);
         try {
@@ -68,6 +70,7 @@ public class LinksServiceJdbcImpl implements LinksService {
     }
 
     @Override
+    @Transactional
     public LinkResponse removeLinkFromChat(Long chatId, RemoveLinkRequest removeLinkRequest) {
         log.info("Remove link {} from chat {}", removeLinkRequest.link(), chatId);
         checkChatRegistered(chatId);
@@ -87,6 +90,7 @@ public class LinksServiceJdbcImpl implements LinksService {
     }
 
     @Override
+    @Transactional
     public void updateLink(Link link) {
         log.info("Update link {}", link.url());
         linkRepository.update(link);
@@ -94,6 +98,7 @@ public class LinksServiceJdbcImpl implements LinksService {
     }
 
     @Override
+    @Transactional
     public List<Long> getChatIdsForLink(Link link) {
         log.info("Get chat ids for link {}", link.url());
         var chatIds = chatLinkRepository.findAllByLinkId(link.id()).stream()

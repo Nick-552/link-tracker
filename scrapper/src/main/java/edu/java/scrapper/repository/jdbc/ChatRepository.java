@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,7 +14,6 @@ public class ChatRepository {
 
     private final JdbcClient jdbcClient;
 
-    @Transactional
     public void add(Chat chat) {
         jdbcClient
             .sql("INSERT INTO chats (id) VALUES (?)")
@@ -23,7 +21,6 @@ public class ChatRepository {
             .update();
     }
 
-    @Transactional
     public void removeById(Long id) {
         jdbcClient
             .sql("DELETE FROM chats WHERE id = ?")
@@ -31,7 +28,6 @@ public class ChatRepository {
             .update();
     }
 
-    @Transactional
     public List<Chat> findAll() {
         return jdbcClient
             .sql("SELECT * FROM chats")

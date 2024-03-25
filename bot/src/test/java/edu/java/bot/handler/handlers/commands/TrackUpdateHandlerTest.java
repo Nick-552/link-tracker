@@ -8,7 +8,7 @@ import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.dto.response.scrapper.LinkResponse;
 import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
-import edu.java.bot.storage.ChatLinksStorage;
+import edu.java.bot.repository.ChatLinkRepository;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Stream;
@@ -34,7 +34,7 @@ class TrackUpdateHandlerTest {
 
 
     @Mock
-    ChatLinksStorage storageService = Mockito.mock(ChatLinksStorage.class);
+    ChatLinkRepository storageService = Mockito.mock(ChatLinkRepository.class);
 
     TrackUpdateHandler trackUpdateHandler = new TrackUpdateHandler(storageService);
 

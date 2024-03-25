@@ -25,20 +25,26 @@ import org.springframework.stereotype.Component;
 @Getter
 public class LinkTrackerBot extends TelegramBot implements UpdatesListener, AutoCloseable {
 
-    public final String about = "Бот для отслеживания изменений на страницах";
-
-    public final String name = "LinkTracker";
-
-    @SuppressWarnings("checkstyle:LineLength")
-    public final String description = "С помощью этого бота вы можете отслеживать обновление контента на таких страницах, как stackoverflow и GitHub.";
-
-    private final int botZoneOffset = 3;
+    private final int botZoneOffset;
 
     private final UserMessageProcessor userMessageProcessor;
 
     public LinkTrackerBot(ApplicationConfig config, UserMessageProcessor userMessageProcessor) {
-        super(config.telegramToken());
+        super(config.token());
         this.userMessageProcessor = userMessageProcessor;
+        this.botZoneOffset = config.zoneOffset();
+        if (config.name() != null && !config.name().isBlank()) {
+            log.info("setting bot name: {}", config.name());
+            execute(new SetMyName().name(config.name()));
+        }
+        if (config.about() != null && !config.about().isBlank()) {
+            log.info("setting bot about: {}", config.about());
+            execute(new SetMyShortDescription().description(config.about()));
+        }
+        if (config.about() != null && !config.about().isBlank()) {
+            log.info("setting bot description: {}", config.about());
+            execute(new SetMyDescription().description(config.about()));
+        }
         log.info("bot created");
     }
 
@@ -66,9 +72,6 @@ public class LinkTrackerBot extends TelegramBot implements UpdatesListener, Auto
                     .toArray(BotCommand[]::new)
             )
         );
-        execute(new SetMyName().name(name));
-        execute(new SetMyShortDescription().description(about));
-        execute(new SetMyDescription().description(description));
         log.info("bot started and configured");
     }
 

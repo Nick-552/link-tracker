@@ -7,7 +7,7 @@ import edu.java.bot.dto.request.scrapper.AddLinkRequest;
 import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
-import edu.java.bot.storage.ChatLinksStorage;
+import edu.java.bot.repository.ChatLinkRepository;
 import java.net.URI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import static edu.java.bot.utils.MessagesUtils.getTrackExplanation;
 @RequiredArgsConstructor
 public class TrackUpdateHandler extends UpdateHandlerWithNext {
 
-    private final ChatLinksStorage chatLinksStorage;
+    private final ChatLinkRepository chatLinkRepository;
 
     @Override
     public boolean supports(Update update) {
@@ -37,7 +37,7 @@ public class TrackUpdateHandler extends UpdateHandlerWithNext {
             );
         }
         try {
-            chatLinksStorage.addLink(chatID, new AddLinkRequest(URI.create(tokens[1])));
+            chatLinkRepository.addLink(chatID, new AddLinkRequest(URI.create(tokens[1])));
             return Optional.of(
                 createMessage(chatID, getLinkAddedMessage(tokens[1]))
             );
