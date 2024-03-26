@@ -2,10 +2,12 @@ package edu.java.scrapper.service.update.stackoverflow;
 
 import edu.java.scrapper.model.LinkType;
 import edu.java.scrapper.service.fetcher.StackoverflowDataFetcher;
+import edu.java.scrapper.service.update.EventInfo;
 import edu.java.scrapper.service.update.UpdateInfo;
 import edu.java.scrapper.service.update.UpdateInfoService;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +23,10 @@ public class StackoverflowQuestionUpdateInfoService implements UpdateInfoService
     }
 
     @Override
-    public UpdateInfo getUpdateInformation(URI url) {
-        return new UpdateInfo("Страница была обновлена", getLastUpdate(url));
+    public UpdateInfo getUpdateInformation(URI url, OffsetDateTime after) {
+        return new UpdateInfo(
+            List.of(new EventInfo(getLastUpdate(url), "Страница была обновлена"))
+        );
     }
 
     @Override

@@ -37,8 +37,8 @@ public abstract class LinksService {
         return updateInfoService.getLastUpdate(url);
     }
 
-    public UpdateInfo getUpdateInformation(URI url) {
+    public UpdateInfo getUpdateInformation(URI url, OffsetDateTime after) {
         var updateInfoService = updateInfoServiceProvider.provide(url);
-        return updateInfoService.getUpdateInformation(url);
+        return updateInfoService.getUpdateInformation(url, after);
     }
 }

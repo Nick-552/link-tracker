@@ -9,7 +9,7 @@ public interface UpdateInfoService {
 
     OffsetDateTime getLastUpdate(URI url);
 
-    UpdateInfo getUpdateInformation(URI url);
+    UpdateInfo getUpdateInformation(URI url, OffsetDateTime after);
 
     LinkType linkType();
 
