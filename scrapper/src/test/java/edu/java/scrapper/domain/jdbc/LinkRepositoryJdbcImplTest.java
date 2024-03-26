@@ -1,6 +1,7 @@
 package edu.java.scrapper.domain.jdbc;
 
 import edu.java.scrapper.IntegrationEnvironment;
+import edu.java.scrapper.domain.repository.jdbc.LinkRepositoryJdbcImpl;
 import edu.java.scrapper.model.Link;
 import java.net.URI;
 import java.time.Duration;

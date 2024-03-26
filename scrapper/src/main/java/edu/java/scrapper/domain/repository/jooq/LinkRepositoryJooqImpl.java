@@ -1,6 +1,6 @@
-package edu.java.scrapper.domain.jooq.repository;
+package edu.java.scrapper.domain.repository.jooq;
 
-import edu.java.scrapper.domain.LinkRepository;
+import edu.java.scrapper.domain.repository.LinkRepository;
 import edu.java.scrapper.model.Link;
 import java.net.URI;
 import java.time.Duration;

@@ -1,8 +1,8 @@
 package edu.java.scrapper.configuration;
 
-import edu.java.scrapper.domain.jdbc.ChatLinkRepositoryJdbcImpl;
-import edu.java.scrapper.domain.jdbc.ChatRepositoryJdbcImpl;
-import edu.java.scrapper.domain.jdbc.LinkRepositoryJdbcImpl;
+import edu.java.scrapper.domain.repository.jdbc.ChatLinkRepositoryJdbcImpl;
+import edu.java.scrapper.domain.repository.jdbc.ChatRepositoryJdbcImpl;
+import edu.java.scrapper.domain.repository.jdbc.LinkRepositoryJdbcImpl;
 import edu.java.scrapper.service.links.LinksService;
 import edu.java.scrapper.service.links.LinksServiceRepoImpl;
 import edu.java.scrapper.service.tgchats.TgChatsService;

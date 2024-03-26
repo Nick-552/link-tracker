@@ -24,7 +24,9 @@ public class PullRequestReviewCommentEventInfoProvider implements EventInfoProvi
             case "deleted" -> sb.append("удалил ");
             default -> log.warn("Unknown action: " + payload.action());
         }
-        sb.append("комментарий к Pull Request ")
+        sb.append("комментарий к review ")
+            .append(payload.review().htmlUrl())
+            .append(" в Pull Request ")
             .append(payload.pullRequest().htmlUrl())
             .append(" в репозитории ");
         return sb.toString();

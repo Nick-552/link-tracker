@@ -1,8 +1,8 @@
 package edu.java.scrapper.configuration;
 
-import edu.java.scrapper.domain.jooq.repository.ChatLinkRepositoryJooqImpl;
-import edu.java.scrapper.domain.jooq.repository.ChatRepositoryJooqImpl;
-import edu.java.scrapper.domain.jooq.repository.LinkRepositoryJooqImpl;
+import edu.java.scrapper.domain.repository.jooq.ChatLinkRepositoryJooqImpl;
+import edu.java.scrapper.domain.repository.jooq.ChatRepositoryJooqImpl;
+import edu.java.scrapper.domain.repository.jooq.LinkRepositoryJooqImpl;
 import edu.java.scrapper.service.links.LinksService;
 import edu.java.scrapper.service.links.LinksServiceRepoImpl;
 import edu.java.scrapper.service.tgchats.TgChatsService;

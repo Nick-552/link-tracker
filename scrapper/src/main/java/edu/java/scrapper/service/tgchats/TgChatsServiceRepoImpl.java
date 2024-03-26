@@ -1,8 +1,8 @@
 package edu.java.scrapper.service.tgchats;
 
-import edu.java.scrapper.domain.ChatLinkRepository;
-import edu.java.scrapper.domain.ChatRepository;
-import edu.java.scrapper.domain.LinkRepository;
+import edu.java.scrapper.domain.repository.ChatLinkRepository;
+import edu.java.scrapper.domain.repository.ChatRepository;
+import edu.java.scrapper.domain.repository.LinkRepository;
 import edu.java.scrapper.exception.ChatAlreadyRegisteredException;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;

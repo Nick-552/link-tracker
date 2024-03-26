@@ -1,6 +1,7 @@
 package edu.java.scrapper.domain.jdbc;
 
 import edu.java.scrapper.IntegrationEnvironment;
+import edu.java.scrapper.domain.repository.jdbc.ChatLinkRepositoryJdbcImpl;
 import edu.java.scrapper.model.ChatLink;
 import java.time.OffsetDateTime;
 import java.util.List;

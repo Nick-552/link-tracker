@@ -1,6 +1,7 @@
 package edu.java.scrapper.domain.jdbc;
 
 import edu.java.scrapper.IntegrationEnvironment;
+import edu.java.scrapper.domain.repository.jdbc.ChatRepositoryJdbcImpl;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;
 import java.util.List;

@@ -1,6 +1,6 @@
-package edu.java.scrapper.domain.jooq.repository;
+package edu.java.scrapper.domain.repository.jooq;
 
-import edu.java.scrapper.domain.ChatRepository;
+import edu.java.scrapper.domain.repository.ChatRepository;
 import edu.java.scrapper.model.Chat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
