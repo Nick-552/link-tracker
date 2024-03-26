@@ -91,7 +91,7 @@ class LinkRepositoryJdbcImplTest extends IntegrationEnvironment {
     void findByUrl() {
         var links = setUpLinks();
         var link = linkRepositoryJdbcImpl.findByUrl(links.get(0).url());
-        assertThat(link).isEqualTo(links.get(0));
+        assertThat(link.get()).isEqualTo(links.get(0));
     }
 
     @Test
