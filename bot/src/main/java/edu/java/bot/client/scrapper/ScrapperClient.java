@@ -7,7 +7,7 @@ import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.dto.response.scrapper.LinkResponse;
 import edu.java.bot.dto.response.scrapper.LinksListResponse;
 import edu.java.bot.exception.ScrapperApiException;
-import edu.java.bot.storage.ChatLinksStorage;
+import edu.java.bot.repository.ChatLinkRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
@@ -18,7 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ScrapperClient extends AbstractJsonWebClient implements ChatLinksStorage {
+public class ScrapperClient extends AbstractJsonWebClient implements ChatLinkRepository {
 
     private static final String TG_CHAT_URI = "/tg-chat/{id}";
 

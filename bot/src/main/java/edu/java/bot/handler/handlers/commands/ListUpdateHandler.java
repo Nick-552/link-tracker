@@ -6,7 +6,7 @@ import edu.java.bot.configuration.Command;
 import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
-import edu.java.bot.storage.ChatLinksStorage;
+import edu.java.bot.repository.ChatLinkRepository;
 import edu.java.bot.utils.MessagesUtils;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import static edu.java.bot.utils.MessagesUtils.getLinksList;
 @RequiredArgsConstructor
 public class ListUpdateHandler extends UpdateHandlerWithNext {
 
-    private final ChatLinksStorage chatLinksStorage;
+    private final ChatLinkRepository chatLinkRepository;
 
     @Override
     public boolean supports(Update update) {
@@ -28,7 +28,7 @@ public class ListUpdateHandler extends UpdateHandlerWithNext {
     protected Optional<AbstractSendRequest<? extends AbstractSendRequest<?>>> doHandle(Update update) {
         var chatID = HandlerUtils.chatID(update);
         try {
-            var links = chatLinksStorage.getLinks(chatID);
+            var links = chatLinkRepository.getLinks(chatID);
             if (links.size() == 0) {
                 return Optional.of(
                     createMessage(chatID, MessagesUtils.NO_LINKS_MESSAGE)
