@@ -8,7 +8,7 @@ import edu.java.bot.dto.request.scrapper.RemoveLinkRequest;
 import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
-import edu.java.bot.storage.ChatLinksStorage;
+import edu.java.bot.repository.ChatLinkRepository;
 import java.net.URI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import static edu.java.bot.utils.MessagesUtils.getTrackExplanation;
 @RequiredArgsConstructor
 public class UntrackUpdateHandler extends UpdateHandlerWithNext {
 
-    private final ChatLinksStorage chatLinksStorage;
+    private final ChatLinkRepository chatLinkRepository;
 
     @Override
     public boolean supports(Update update) {
@@ -41,7 +41,7 @@ public class UntrackUpdateHandler extends UpdateHandlerWithNext {
         }
         String link = tokens[1];
         try {
-            chatLinksStorage.removeLink(chatID, new RemoveLinkRequest(URI.create(link)));
+            chatLinkRepository.removeLink(chatID, new RemoveLinkRequest(URI.create(link)));
             return Optional.of(
                 createMessage(chatID, getLinkRemovedMessage(link))
             );

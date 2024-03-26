@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
-import edu.java.bot.storage.ChatLinksStorage;
+import edu.java.bot.repository.ChatLinkRepository;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 class StartUpdateHandlerTest {
 
     @Mock
-    ChatLinksStorage storageService = Mockito.mock(ChatLinksStorage.class);
+    ChatLinkRepository storageService = Mockito.mock(ChatLinkRepository.class);
 
     StartUpdateHandler startUpdateHandler = new StartUpdateHandler(storageService);
 

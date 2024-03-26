@@ -1,5 +1,9 @@
 app:
-  telegram-token: ${TG_TOKEN}
+  token: ${TG_TOKEN}
+  name: LinkTracker
+  about: Бот для отслеживания изменений на страницах
+  description: С помощью этого бота вы можете отслеживать обновление контента на таких страницах, как stackoverflow и GitHub.
+  zone-offset: 3
 
 spring:
   application:

@@ -11,8 +11,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class MessagesUtils {
 
-    public static final String DELIMITER = "\n\n";
-
     public static final String DEFAULT_MESSAGE = """
         Я тебя не совсем понимаю, используй доступные команды.
         Чтобы вывести список доступных команд, используй /help
@@ -26,17 +24,9 @@ public class MessagesUtils {
 
     public static final String HELP_MESSAGE;
 
-    static {
-        StringBuilder sb = new StringBuilder("Доступные команды:\n\n");
-        for (var command: Command.values()) {
-            sb.append("/%s - %s\n".formatted(command.getCommand(), command.getDescription()));
-        }
-        HELP_MESSAGE = sb.toString();
-    }
-
     public static final String NO_LINKS_MESSAGE = "Нет отслеживаемых ссылок";
 
-    public static final String LINKS_LIST = "Список отслеживаемых ссылок:\n\n";
+    private static final String DELIMITER = "\n\n";
 
 
     @SuppressWarnings("checkstyle:LineLength")
@@ -63,11 +53,28 @@ public class MessagesUtils {
         Ссылка для отслеживания удалена: %s
         """;
 
+    private static final String LINKS_LIST = "Список отслеживаемых ссылок:\n\n";
+
     private static final String INVALID_LINK_MESSAGE = """
         Неверный формат ссылки
         """;
 
     private static final String ERROR_MESSAGE = "Возникла ошибка:\n%s";
+
+    private static final String LINK_UPDATE_MESSAGE = """
+        Обновление ссылки %s
+        Обновлена %s
+        Подробности:
+        %s
+        """;
+
+    static {
+        StringBuilder sb = new StringBuilder("Доступные команды:\n\n");
+        for (var command: Command.values()) {
+            sb.append("/%s - %s\n".formatted(command.getCommand(), command.getDescription()));
+        }
+        HELP_MESSAGE = sb.toString();
+    }
 
     public static String getLinksList(List<String> links) {
         var sb = new StringBuilder(LINKS_LIST);
@@ -113,13 +120,6 @@ public class MessagesUtils {
         return new SendMessage(chatId, sb.toString().strip());
     }
 
-    public static final String UPDATE = """
-        Обновление ссылки %s
-        Обновлена %s
-        Подробности:
-        %s
-        """;
-
     public static SendMessage createUpdateMessage(
         Object chatId,
         URI link,
@@ -131,6 +131,6 @@ public class MessagesUtils {
         var time = offsetDateTime.toLocalTime().truncatedTo(ChronoUnit.SECONDS);
         var offset = offsetDateTime.getOffset();
         var timeString = String.format("%s в %s %s", dateString, time, offset);
-        return new SendMessage(chatId, UPDATE.formatted(link, timeString, message));
+        return new SendMessage(chatId, LINK_UPDATE_MESSAGE.formatted(link, timeString, message));
     }
 }

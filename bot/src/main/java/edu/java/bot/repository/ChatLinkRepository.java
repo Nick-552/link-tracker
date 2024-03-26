@@ -1,4 +1,4 @@
-package edu.java.bot.storage;
+package edu.java.bot.repository;
 
 import edu.java.bot.dto.request.scrapper.AddLinkRequest;
 import edu.java.bot.dto.request.scrapper.RemoveLinkRequest;
@@ -7,7 +7,7 @@ import edu.java.bot.dto.response.scrapper.LinksListResponse;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface ChatLinksStorage {
+public interface ChatLinkRepository {
 
     Void addTgChat(Long chatId);
 
