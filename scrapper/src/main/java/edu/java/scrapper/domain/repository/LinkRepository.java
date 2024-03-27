@@ -13,7 +13,7 @@ public interface LinkRepository {
         int limit, Duration minTimeSinceLastUpdate
     );
 
-    Link findById(Long id);
+    Optional<Link> findById(Long id);
 
     Optional<Link> findByUrl(URI url);
 
@@ -21,5 +21,5 @@ public interface LinkRepository {
 
     void update(Link link);
 
-    void remove(Long id);
+    void removeById(Long id);
 }

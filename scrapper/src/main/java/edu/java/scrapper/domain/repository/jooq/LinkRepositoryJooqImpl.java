@@ -29,10 +29,10 @@ public class LinkRepositoryJooqImpl implements LinkRepository {
     }
 
     @Override
-    public Link findById(Long id) {
+    public Optional<Link> findById(Long id) {
         return dslContext.selectFrom(LINKS)
             .where(LINKS.ID.eq(id))
-            .fetchOneInto(Link.class);
+            .fetchOptionalInto(Link.class);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class LinkRepositoryJooqImpl implements LinkRepository {
             .values(String.valueOf(url), updatedAt, OffsetDateTime.now())
             .onConflictDoNothing()
             .execute();
-        return findByUrl(url).get();
+        return findByUrl(url).orElseThrow();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class LinkRepositoryJooqImpl implements LinkRepository {
     }
 
     @Override
-    public void remove(Long id) {
+    public void removeById(Long id) {
         dslContext.delete(LINKS)
             .where(LINKS.ID.eq(id))
             .execute();

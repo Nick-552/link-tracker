@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
 public class LinkRepositoryJdbcImpl implements LinkRepository {
 
@@ -36,12 +34,12 @@ public class LinkRepositoryJdbcImpl implements LinkRepository {
     }
 
     @Override
-    public Link findById(Long id) {
+    public Optional<Link> findById(Long id) {
         return jdbcClient
             .sql("SELECT * FROM links WHERE id = ?")
             .params(id)
             .query(Link.class)
-            .single();
+            .optional();
     }
 
     @Override
@@ -61,7 +59,7 @@ public class LinkRepositoryJdbcImpl implements LinkRepository {
                 .params(url.toString(), updatedAt, OffsetDateTime.now())
                 .update();
         }
-        return findByUrl(url).get();
+        return findByUrl(url).orElseThrow();
     }
 
     @Override
@@ -75,7 +73,7 @@ public class LinkRepositoryJdbcImpl implements LinkRepository {
     }
 
     @Override
-    public void remove(Long id) {
+    public void removeById(Long id) {
         jdbcClient
             .sql("DELETE FROM links WHERE id = :id")
             .param("id", id)

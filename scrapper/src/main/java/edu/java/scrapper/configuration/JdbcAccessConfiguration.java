@@ -1,5 +1,8 @@
 package edu.java.scrapper.configuration;
 
+import edu.java.scrapper.domain.repository.ChatLinkRepository;
+import edu.java.scrapper.domain.repository.ChatRepository;
+import edu.java.scrapper.domain.repository.LinkRepository;
 import edu.java.scrapper.domain.repository.jdbc.ChatLinkRepositoryJdbcImpl;
 import edu.java.scrapper.domain.repository.jdbc.ChatRepositoryJdbcImpl;
 import edu.java.scrapper.domain.repository.jdbc.LinkRepositoryJdbcImpl;
@@ -18,45 +21,45 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 public class JdbcAccessConfiguration {
 
     @Bean
-    public ChatRepositoryJdbcImpl chatRepository(JdbcClient jdbcClient) {
+    public ChatRepository chatRepository(JdbcClient jdbcClient) {
         return new ChatRepositoryJdbcImpl(jdbcClient);
     }
 
     @Bean
-    public ChatLinkRepositoryJdbcImpl chatLinkRepository(JdbcClient jdbcClient) {
+    public ChatLinkRepository chatLinkRepository(JdbcClient jdbcClient) {
         return new ChatLinkRepositoryJdbcImpl(jdbcClient);
     }
 
     @Bean
-    public LinkRepositoryJdbcImpl linkRepository(JdbcClient jdbcClient) {
+    public LinkRepository linkRepository(JdbcClient jdbcClient) {
         return new LinkRepositoryJdbcImpl(jdbcClient);
     }
 
     @Bean
     public TgChatsService tgChatsService(
-        LinkRepositoryJdbcImpl linkRepositoryJdbcImpl,
-        ChatLinkRepositoryJdbcImpl chatLinkRepositoryJdbcImpl,
-        ChatRepositoryJdbcImpl chatRepositoryJdbcImpl
+        LinkRepository linkRepository,
+        ChatLinkRepository chatLinkRepository,
+        ChatRepository chatRepository
     ) {
         return new TgChatsServiceRepoImpl(
-            linkRepositoryJdbcImpl,
-            chatLinkRepositoryJdbcImpl,
-            chatRepositoryJdbcImpl
+            linkRepository,
+            chatLinkRepository,
+            chatRepository
         );
     }
 
     @Bean
     public LinksService linksService(
         UpdateInfoServiceProvider updateInfoServiceProvider,
-        LinkRepositoryJdbcImpl linkRepositoryJdbcImpl,
-        ChatLinkRepositoryJdbcImpl chatLinkRepositoryJdbcImpl,
-        ChatRepositoryJdbcImpl chatRepositoryJdbcImpl
+        LinkRepository linkRepository,
+        ChatLinkRepository chatLinkRepository,
+        ChatRepository chatRepository
     ) {
         return new LinksServiceRepoImpl(
             updateInfoServiceProvider,
-            linkRepositoryJdbcImpl,
-            chatLinkRepositoryJdbcImpl,
-            chatRepositoryJdbcImpl
+            linkRepository,
+            chatLinkRepository,
+            chatRepository
         );
     }
 }

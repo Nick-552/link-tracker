@@ -49,6 +49,7 @@ public class LinksServiceRepoImpl extends LinksService {
             .map(
                 chatLink -> linkRepository
                     .findById(chatLink.linkId())
+                    .orElseThrow(LinkNotFoundException::new)
                     .toLinkResponse()
             ).toList();
         return new LinksListResponse(linkResponses, linkResponses.size());
@@ -78,14 +79,12 @@ public class LinksServiceRepoImpl extends LinksService {
     public LinkResponse removeLinkFromChat(Long chatId, RemoveLinkRequest removeLinkRequest) {
         log.info("Remove link {} from chat {}", removeLinkRequest.link(), chatId);
         checkChatRegistered(chatId);
-        var link = linkRepository.findByUrl(removeLinkRequest.link()).orElseThrow(LinkNotFoundException::new);
-        if (!chatLinkRepository.existsByChatIdAndLinkId(chatId, link.id())) {
-            log.info("Link {} not tracked in chat {}", removeLinkRequest.link(), chatId);
-            throw new LinkNotFoundException();
-        }
-        chatLinkRepository.remove(chatId, link.id());
-        if (chatLinkRepository.findAllByLinkId(link.id()).isEmpty()) { // if no chat links
-            linkRepository.remove(link.id()); // remove link
+        var link = linkRepository.findByUrl(removeLinkRequest.link())
+            .orElseThrow(LinkNotFoundException::new); // no such link in links
+        chatLinkRepository.remove(chatId, link.id())
+            .orElseThrow(LinkNotFoundException::new); // no such link in chat links
+        if (chatLinkRepository.findAllByLinkId(link.id()).isEmpty()) { // if no chats with this link
+            linkRepository.removeById(link.id()); // remove link
             log.info("Removed link {}", removeLinkRequest.link());
         }
         log.info("Removed link {} from chat {}", removeLinkRequest.link(), chatId);

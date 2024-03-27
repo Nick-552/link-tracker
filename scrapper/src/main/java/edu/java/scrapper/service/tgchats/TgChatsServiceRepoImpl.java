@@ -47,7 +47,7 @@ public class TgChatsServiceRepoImpl implements TgChatsService {
         chatRepository.removeById(id);
         linkIds.forEach(linkId -> {
             if (chatLinkRepository.findAllByLinkId(linkId).isEmpty()) {
-                linkRepository.remove(linkId);
+                linkRepository.removeById(linkId);
             }
         });
         log.info("Chat {} deleted", id);

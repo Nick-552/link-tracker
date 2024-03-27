@@ -3,11 +3,10 @@ package edu.java.scrapper.domain.repository.jdbc;
 import edu.java.scrapper.domain.repository.ChatLinkRepository;
 import edu.java.scrapper.model.ChatLink;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
 public class ChatLinkRepositoryJdbcImpl implements ChatLinkRepository {
 
@@ -22,12 +21,12 @@ public class ChatLinkRepositoryJdbcImpl implements ChatLinkRepository {
     }
 
     @Override
-    public ChatLink remove(Long chatId, Long linkId) {
+    public Optional<ChatLink> remove(Long chatId, Long linkId) {
         return jdbcClient
             .sql("DELETE FROM chats_links WHERE chat_id = ? AND link_id = ? RETURNING *")
             .params(chatId, linkId)
             .query(ChatLink.class)
-            .single();
+            .optional();
     }
 
     @Override

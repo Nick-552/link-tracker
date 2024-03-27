@@ -12,7 +12,7 @@ import static edu.java.bot.utils.MessagesUtils.createMessage;
 public class HandlerUtils {
 
     public static String text(Update update) {
-        return update.message().text();
+        return update.message().text().toLowerCase();
     }
 
     public static long chatID(Update update) {
@@ -33,7 +33,7 @@ public class HandlerUtils {
     }
 
     public static boolean isMessageAndHasText(Update update) {
-        return isMessage(update) && text(update) != null;
+        return isMessage(update);
     }
 
     public static boolean isCommand(Update update) {
@@ -41,7 +41,7 @@ public class HandlerUtils {
     }
 
     public static boolean isCommand(Update update, Command command) {
-        return isCommand(update) && (text(update).toLowerCase().startsWith("/" + command.getCommand() + " ")
+        return isCommand(update) && (text(update).startsWith("/" + command.getCommand() + " ")
             || text(update).equalsIgnoreCase("/" + command.getCommand()));
     }
 

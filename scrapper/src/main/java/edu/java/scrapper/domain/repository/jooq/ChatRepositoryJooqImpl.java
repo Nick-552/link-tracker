@@ -3,6 +3,7 @@ package edu.java.scrapper.domain.repository.jooq;
 import edu.java.scrapper.domain.repository.ChatRepository;
 import edu.java.scrapper.model.Chat;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import static edu.java.scrapper.domain.jooq.tables.Chats.CHATS;
@@ -34,10 +35,10 @@ public class ChatRepositoryJooqImpl implements ChatRepository {
     }
 
     @Override
-    public Chat findById(Long id) {
+    public Optional<Chat> findById(Long id) {
         return dslContext.selectFrom(CHATS)
             .where(CHATS.ID.eq(id))
-            .fetchOneInto(Chat.class);
+            .fetchOptionalInto(Chat.class);
     }
 
     @Override

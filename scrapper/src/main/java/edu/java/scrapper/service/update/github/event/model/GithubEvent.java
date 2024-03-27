@@ -1,5 +1,6 @@
 package edu.java.scrapper.service.update.github.event.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import lombok.Getter;
@@ -118,8 +119,9 @@ public class GithubEvent {
     ) {
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record GithubPullRequestReview(
-        @JsonProperty("author")
+        @JsonProperty("user")
         GithubUser author,
         @JsonProperty("body")
         String body,

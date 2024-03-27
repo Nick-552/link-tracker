@@ -1,5 +1,8 @@
 package edu.java.scrapper.configuration;
 
+import edu.java.scrapper.domain.repository.ChatLinkRepository;
+import edu.java.scrapper.domain.repository.ChatRepository;
+import edu.java.scrapper.domain.repository.LinkRepository;
 import edu.java.scrapper.domain.repository.jooq.ChatLinkRepositoryJooqImpl;
 import edu.java.scrapper.domain.repository.jooq.ChatRepositoryJooqImpl;
 import edu.java.scrapper.domain.repository.jooq.LinkRepositoryJooqImpl;
@@ -29,44 +32,44 @@ public class JooqAccessConfiguration {
     }
 
     @Bean
-    public LinkRepositoryJooqImpl linkRepositoryJooqImpl(DSLContext context) {
+    public LinkRepository linkRepository(DSLContext context) {
         return new LinkRepositoryJooqImpl(context);
     }
 
     @Bean
-    public ChatLinkRepositoryJooqImpl chatLinkRepositoryJooqImpl(DSLContext context) {
+    public ChatLinkRepository chatLinkRepository(DSLContext context) {
         return new ChatLinkRepositoryJooqImpl(context);
     }
 
-    @Bean ChatRepositoryJooqImpl chatRepositoryJooqImpl(DSLContext context) {
+    @Bean ChatRepository chatRepository(DSLContext context) {
         return new ChatRepositoryJooqImpl(context);
     }
 
     @Bean
     public TgChatsService tgChatsService(
-        LinkRepositoryJooqImpl linkRepositoryJooqImpl,
-        ChatLinkRepositoryJooqImpl chatLinkRepositoryJooqImpl,
-        ChatRepositoryJooqImpl chatRepositoryJooqImpl
+        LinkRepository linkRepository,
+        ChatLinkRepository chatLinkRepository,
+        ChatRepository chatRepository
     ) {
         return new TgChatsServiceRepoImpl(
-            linkRepositoryJooqImpl,
-            chatLinkRepositoryJooqImpl,
-            chatRepositoryJooqImpl
+            linkRepository,
+            chatLinkRepository,
+            chatRepository
         );
     }
 
     @Bean
     public LinksService linksService(
         UpdateInfoServiceProvider updateInfoServiceProvider,
-        LinkRepositoryJooqImpl linkRepositoryJooqImpl,
-        ChatLinkRepositoryJooqImpl chatLinkRepositoryJooqImpl,
-        ChatRepositoryJooqImpl chatRepositoryJooqImpl
+        LinkRepository linkRepository,
+        ChatLinkRepository chatLinkRepository,
+        ChatRepository chatRepository
     ) {
         return new LinksServiceRepoImpl(
             updateInfoServiceProvider,
-            linkRepositoryJooqImpl,
-            chatLinkRepositoryJooqImpl,
-            chatRepositoryJooqImpl
+            linkRepository,
+            chatLinkRepository,
+            chatRepository
         );
     }
 }

@@ -2,6 +2,7 @@ package edu.java.scrapper.domain.repository;
 
 import edu.java.scrapper.model.Chat;
 import java.util.List;
+import java.util.Optional;
 
 public interface ChatRepository {
 
@@ -11,7 +12,7 @@ public interface ChatRepository {
 
     List<Chat> findAll();
 
-    Chat findById(Long id);
+    Optional<Chat> findById(Long id);
 
     boolean existsById(Long id);
 }

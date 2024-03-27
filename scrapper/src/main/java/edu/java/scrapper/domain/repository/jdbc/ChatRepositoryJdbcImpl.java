@@ -1,14 +1,12 @@
 package edu.java.scrapper.domain.repository.jdbc;
 
 import edu.java.scrapper.domain.repository.ChatRepository;
-import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
 public class ChatRepositoryJdbcImpl implements ChatRepository {
 
@@ -39,13 +37,12 @@ public class ChatRepositoryJdbcImpl implements ChatRepository {
     }
 
     @Override
-    public Chat findById(Long id) {
+    public Optional<Chat> findById(Long id) {
         return jdbcClient
             .sql("SELECT * FROM chats WHERE id = ?")
             .params(id)
             .query(Chat.class)
-            .optional()
-            .orElseThrow(ChatNotRegisteredException::new);
+            .optional();
     }
 
     @Override

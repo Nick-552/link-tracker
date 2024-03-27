@@ -3,6 +3,7 @@ package edu.java.scrapper.domain.repository.jooq;
 import edu.java.scrapper.domain.repository.ChatLinkRepository;
 import edu.java.scrapper.model.ChatLink;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import static edu.java.scrapper.domain.jooq.tables.ChatsLinks.CHATS_LINKS;
@@ -20,11 +21,11 @@ public class ChatLinkRepositoryJooqImpl implements ChatLinkRepository {
     }
 
     @Override
-    public ChatLink remove(Long chatId, Long linkId) {
+    public Optional<ChatLink> remove(Long chatId, Long linkId) {
         return dslContext.deleteFrom(CHATS_LINKS)
             .where(CHATS_LINKS.CHAT_ID.eq(chatId).and(CHATS_LINKS.LINK_ID.eq(linkId)))
             .returning()
-            .fetchOneInto(ChatLink.class);
+            .fetchOptionalInto(ChatLink.class);
     }
 
     @Override
