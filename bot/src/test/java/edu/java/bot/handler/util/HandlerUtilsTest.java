@@ -22,7 +22,7 @@ class HandlerUtilsTest {
         Update update = mockedUpdateWithMessageWithText("/command");
         SendMessage expected = createMessage(DEFAULT_CHAT_ID, NO_SUCH_COMMAND_MESSAGE);
         var actual = defaultHandle(update);
-        assertEqualsSendMessages(actual, expected);
+        assertEqualsSendMessages((SendMessage) actual, expected);
     }
 
     @Test
@@ -30,7 +30,7 @@ class HandlerUtilsTest {
         Update update = mockedUpdateWithMessageWithText("just some text");
         SendMessage expected = createMessage(DEFAULT_CHAT_ID, DEFAULT_MESSAGE);
         var actual = defaultHandle(update);
-        assertEqualsSendMessages(actual, expected);
+        assertEqualsSendMessages((SendMessage) actual, expected);
     }
 
     @Test
@@ -42,7 +42,7 @@ class HandlerUtilsTest {
             utilities.when(() -> HandlerUtils.defaultHandle(any())).thenCallRealMethod();
             SendMessage expected = createMessage(DEFAULT_CHAT_ID, I_DONT_LIKE_YOUR_UPDATE);
             var actual = defaultHandle(update);
-            assertEqualsSendMessages(actual, expected);
+            assertEqualsSendMessages((SendMessage) actual, expected);
         }
     }
 }

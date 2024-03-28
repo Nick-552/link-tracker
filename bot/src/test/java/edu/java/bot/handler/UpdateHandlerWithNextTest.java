@@ -46,7 +46,7 @@ class UpdateHandlerWithNextTest {
     void nextHandle_whenNextIsNull() {
         updateHandlerWithNext.setNextHandler(null);
         var result = updateHandlerWithNext.nextHandle(new Update());
-        assertEqualsSendMessages((SendMessage) result, defaultHandle(new Update()));
+        assertEqualsSendMessages((SendMessage) result, (SendMessage) defaultHandle(new Update()));
     }
 
     @Test

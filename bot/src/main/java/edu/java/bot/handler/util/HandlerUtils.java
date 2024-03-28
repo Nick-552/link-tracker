@@ -2,7 +2,7 @@ package edu.java.bot.handler.util;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.AbstractSendRequest;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.utils.MessagesUtils;
 import lombok.experimental.UtilityClass;
@@ -45,7 +45,7 @@ public class HandlerUtils {
             || text(update).equalsIgnoreCase("/" + command.getCommand()));
     }
 
-    public static SendMessage defaultHandle(Update update) {
+    public static AbstractSendRequest<? extends AbstractSendRequest<?>> defaultHandle(Update update) {
         if (isCommand(update)) {
             return createMessage(chatID(update), MessagesUtils.NO_SUCH_COMMAND_MESSAGE);
         } else if (isMessageAndHasText(update)) {
