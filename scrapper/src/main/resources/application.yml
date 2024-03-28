@@ -5,6 +5,7 @@ app:
     initial-delay: 10000
     force-check-delay: 0
     check-limit: 10
+  databaseAccessType: jooq
 
 spring:
   application:
@@ -15,6 +16,8 @@ spring:
     url: jdbc:postgresql://localhost:5435/scrapper
     username: postgres
     password: postgres
+  jooq:
+    sql-dialect: postgres
 
 api-client:
   github:

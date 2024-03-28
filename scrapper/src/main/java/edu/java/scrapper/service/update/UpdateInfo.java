@@ -1,6 +1,8 @@
 package edu.java.scrapper.service.update;
 
-import java.time.OffsetDateTime;
+import java.util.List;
 
-public record UpdateInfo(String message, OffsetDateTime lastUpdate) {
+public record UpdateInfo(
+    List<EventInfo> events
+) {
 }

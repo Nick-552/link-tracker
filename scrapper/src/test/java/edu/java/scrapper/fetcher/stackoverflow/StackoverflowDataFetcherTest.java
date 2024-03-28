@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.stackoverflow.StackoverflowClient;
 import edu.java.scrapper.dto.response.stackoverflow.StackoverflowQuestionInfo;
+import edu.java.scrapper.exception.InvalidUrlException;
 import edu.java.scrapper.exception.UnsupportedUrlException;
 import edu.java.scrapper.service.fetcher.StackoverflowDataFetcher;
 import java.net.URI;
@@ -18,7 +19,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -77,7 +77,7 @@ class StackoverflowDataFetcherTest {
     @Test
     @SneakyThrows
     void getQuestionInfo_onStatusError_shouldThrowWebClientResponseException() {
-        assertThatExceptionOfType(WebClientResponseException.class)
+        assertThatExceptionOfType(InvalidUrlException.class)
             .isThrownBy(() -> stackoverflowDataFetcher.getQuestionInfo(URI.create(questionUrl + "/25645634/no-stub-there")));
     }
 

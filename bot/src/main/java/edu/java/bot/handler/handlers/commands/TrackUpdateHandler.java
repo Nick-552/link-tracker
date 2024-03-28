@@ -34,6 +34,7 @@ public class TrackUpdateHandler extends UpdateHandlerWithNext {
         if (tokens.length != 2) {
             return Optional.of(
                 createMessage(chatID, getTrackExplanation(Command.TRACK.getCommand()))
+                    .disableWebPagePreview(true)
             );
         }
         try {

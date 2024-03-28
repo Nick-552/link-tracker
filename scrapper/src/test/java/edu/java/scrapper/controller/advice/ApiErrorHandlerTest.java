@@ -55,13 +55,13 @@ class ApiErrorHandlerTest {
     @Test
     @DisplayName("Exception thrown case")
     @SneakyThrows
-    void getLinks_shouldReturn400ApiErrorResponse_whenExceptionThrown() {
+    void getLinks_shouldReturn500ApiErrorResponse_whenExceptionThrown() {
         Mockito.when(linksService.getLinksForChatId(CHAT_ID))
             .thenThrow(new RuntimeException());
         mvc.perform(
             get(PATH)
                 .header(TG_CHAT_ID_HEADER, CHAT_ID)
-        ).andExpect(status().isBadRequest());
+        ).andExpect(status().isInternalServerError());
     }
 
     @Test
