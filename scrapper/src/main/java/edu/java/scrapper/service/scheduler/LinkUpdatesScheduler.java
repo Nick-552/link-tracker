@@ -52,8 +52,8 @@ public class LinkUpdatesScheduler {
         linksService.updateLink(updatedLink);
     }
 
-    public void sendUpdateInfo(Link link, UpdateInfo updateInfo) {
-        for (var event : updateInfo.events()) {
+    private void sendUpdateInfo(Link link, UpdateInfo updateInfo) {
+        updateInfo.events().forEach(event -> {
             var update = new LinkUpdate(
                 link.id(),
                 link.url(),
@@ -62,6 +62,6 @@ public class LinkUpdatesScheduler {
                 linksService.getChatIdsForLink(link)
             );
             botClient.sendUpdate(update);
-        }
+        });
     }
 }
