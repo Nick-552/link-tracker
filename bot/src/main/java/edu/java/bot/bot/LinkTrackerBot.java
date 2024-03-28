@@ -13,22 +13,38 @@ import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.message.processor.UserMessageProcessor;
-import edu.java.bot.utils.BotUtils;
 import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 @Log4j2
 @Component
+@Getter
 public class LinkTrackerBot extends TelegramBot implements UpdatesListener, AutoCloseable {
+
+    private final int botZoneOffset;
 
     private final UserMessageProcessor userMessageProcessor;
 
     public LinkTrackerBot(ApplicationConfig config, UserMessageProcessor userMessageProcessor) {
-        super(config.telegramToken());
+        super(config.token());
         this.userMessageProcessor = userMessageProcessor;
+        this.botZoneOffset = config.zoneOffset();
+        if (config.name() != null && !config.name().isBlank()) {
+            log.info("setting bot name: {}", config.name());
+            execute(new SetMyName().name(config.name()));
+        }
+        if (config.about() != null && !config.about().isBlank()) {
+            log.info("setting bot about: {}", config.about());
+            execute(new SetMyShortDescription().description(config.about()));
+        }
+        if (config.about() != null && !config.about().isBlank()) {
+            log.info("setting bot description: {}", config.about());
+            execute(new SetMyDescription().description(config.about()));
+        }
         log.info("bot created");
     }
 
@@ -56,9 +72,6 @@ public class LinkTrackerBot extends TelegramBot implements UpdatesListener, Auto
                     .toArray(BotCommand[]::new)
             )
         );
-        execute(new SetMyName().name(BotUtils.NAME));
-        execute(new SetMyShortDescription().description(BotUtils.ABOUT));
-        execute(new SetMyDescription().description(BotUtils.DESCRIPTION));
         log.info("bot started and configured");
     }
 

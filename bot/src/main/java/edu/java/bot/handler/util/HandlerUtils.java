@@ -4,13 +4,15 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.Command;
+import edu.java.bot.utils.MessagesUtils;
 import lombok.experimental.UtilityClass;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
 
 @UtilityClass
 public class HandlerUtils {
 
     public static String text(Update update) {
-        return update.message().text();
+        return update.message().text().toLowerCase();
     }
 
     public static long chatID(Update update) {
@@ -31,7 +33,7 @@ public class HandlerUtils {
     }
 
     public static boolean isMessageAndHasText(Update update) {
-        return isMessage(update) && text(update) != null;
+        return isMessage(update);
     }
 
     public static boolean isCommand(Update update) {
@@ -39,16 +41,16 @@ public class HandlerUtils {
     }
 
     public static boolean isCommand(Update update, Command command) {
-        return isCommand(update) && (text(update).toLowerCase().startsWith("/" + command.getCommand() + " ")
+        return isCommand(update) && (text(update).startsWith("/" + command.getCommand() + " ")
             || text(update).equalsIgnoreCase("/" + command.getCommand()));
     }
 
     public static SendMessage defaultHandle(Update update) {
         if (isCommand(update)) {
-            return new SendMessage(chatID(update), HandlerMessages.NO_SUCH_COMMAND_MESSAGE);
+            return createMessage(chatID(update), MessagesUtils.NO_SUCH_COMMAND_MESSAGE);
         } else if (isMessageAndHasText(update)) {
-            return new SendMessage(chatID(update), HandlerMessages.DEFAULT_MESSAGE);
+            return createMessage(chatID(update), MessagesUtils.DEFAULT_MESSAGE);
         }
-        return new SendMessage(chatID(update), HandlerMessages.I_DONT_LIKE_YOUR_UPDATE);
+        return createMessage(chatID(update), MessagesUtils.I_DONT_LIKE_YOUR_UPDATE);
     }
 }

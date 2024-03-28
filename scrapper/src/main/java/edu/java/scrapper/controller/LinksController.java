@@ -4,7 +4,7 @@ import edu.java.scrapper.dto.request.AddLinkRequest;
 import edu.java.scrapper.dto.request.RemoveLinkRequest;
 import edu.java.scrapper.dto.response.LinkResponse;
 import edu.java.scrapper.dto.response.LinksListResponse;
-import edu.java.scrapper.service.LinksService;
+import edu.java.scrapper.service.links.LinksService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +24,7 @@ public class LinksController {
 
     @GetMapping
     public LinksListResponse getLinks(@RequestHeader("Tg-Chat-Id") Long chatId) {
-        return linksService.getLinks(chatId);
+        return linksService.getLinksForChatId(chatId);
     }
 
     @PostMapping
@@ -32,7 +32,7 @@ public class LinksController {
         @RequestHeader("Tg-Chat-Id") Long chatId,
         @RequestBody @Valid AddLinkRequest addLinkRequest
     ) {
-        return linksService.addLink(chatId, addLinkRequest);
+        return linksService.addLinkToChat(chatId, addLinkRequest);
     }
 
     @DeleteMapping(consumes = "application/json")
@@ -40,6 +40,6 @@ public class LinksController {
         @RequestHeader("Tg-Chat-Id") Long chatId,
         @RequestBody @Valid RemoveLinkRequest removeLinkRequest
     ) {
-        return linksService.removeLink(chatId, removeLinkRequest);
+        return linksService.removeLinkFromChat(chatId, removeLinkRequest);
     }
 }

@@ -28,14 +28,10 @@ public class HandlerTestUtils {
         return update;
     }
 
-    public static SendMessage createSendMessage(String message) {
-        return new SendMessage(DEFAULT_CHAT_ID, message);
-    }
-
-    public static void assertEqualsSendMessages(SendMessage m1, SendMessage m2) {
-        assertThat(m1.getParameters().get("text"))
-            .isEqualTo(m2.getParameters().get("text"));
-        assertThat(m1.getParameters().get("chat_id"))
-            .isEqualTo(m2.getParameters().get("chat_id"));
+    public static void assertEqualsSendMessages(SendMessage actual, SendMessage expected) {
+        assertThat(actual.getParameters().get("text"))
+            .isEqualTo(expected.getParameters().get("text"));
+        assertThat(actual.getParameters().get("chat_id"))
+            .isEqualTo(expected.getParameters().get("chat_id"));
     }
 }

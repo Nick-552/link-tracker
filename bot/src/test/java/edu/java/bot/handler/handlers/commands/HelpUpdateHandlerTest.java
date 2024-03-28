@@ -8,10 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_CHAT_ID;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
-import static edu.java.bot.handler.handlers.HandlerTestUtils.createSendMessage;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
-import static edu.java.bot.handler.util.HandlerMessages.HELP_MESSAGE;
+import static edu.java.bot.utils.MessagesUtils.HELP_MESSAGE;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HelpUpdateHandlerTest {
@@ -42,7 +43,7 @@ class HelpUpdateHandlerTest {
     void doHandle_whenSupports_shouldReturnHelpMessage() {
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) updateHandler.doHandle(update)
-            .orElse(createSendMessage(""));
-        assertEqualsSendMessages(actual, createSendMessage(HELP_MESSAGE));
+            .orElse(createMessage(DEFAULT_CHAT_ID));
+        assertEqualsSendMessages(actual, createMessage(DEFAULT_CHAT_ID, HELP_MESSAGE));
     }
 }

@@ -14,6 +14,5 @@ public class ScrapperApplicationTest {
     @Test
     @DisplayName("Spring context loading & beans initialization test")
     void test() {
-
     }
 }

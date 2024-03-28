@@ -49,6 +49,7 @@
     <modules>
         <module>bot</module>
         <module>scrapper</module>
+        <module>scrapper-jooq</module>
     </modules>
 
     <dependencyManagement>
@@ -233,6 +234,14 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco-maven-plugin.version}</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/domain/jooq/**/*</exclude>
+                            <exclude>**/configuration/*</exclude>
+                            <exclude>**/update/github/event/provider/providers/*</exclude>
+                            <exclude>edu/java/scrapperjooq</exclude>
+                        </excludes>
+                    </configuration>
                     <executions>
                         <execution>
                             <goals>

@@ -2,61 +2,61 @@ package edu.java.bot.handler.handlers.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.configuration.Command;
+import edu.java.bot.dto.request.scrapper.AddLinkRequest;
+import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
-import edu.java.bot.storage.UserLinksStorageService;
+import edu.java.bot.repository.ChatLinkRepository;
+import java.net.URI;
 import java.util.Optional;
-import static edu.java.bot.handler.util.HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE;
-import static edu.java.bot.handler.util.HandlerMessages.getInvalidLinkMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getLinkAddedMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getLinkNotAddedMessage;
-import static edu.java.bot.handler.util.HandlerMessages.getTrackExplanation;
-import static edu.java.bot.utils.LinkUtils.isHttpLink;
+import lombok.RequiredArgsConstructor;
+import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
+import static edu.java.bot.utils.MessagesUtils.getInvalidLinkMessage;
+import static edu.java.bot.utils.MessagesUtils.getLinkAddedMessage;
+import static edu.java.bot.utils.MessagesUtils.getTrackExplanation;
 
+@RequiredArgsConstructor
 public class TrackUpdateHandler extends UpdateHandlerWithNext {
 
-    private final UserLinksStorageService linksStorageService;
-
-
-    public TrackUpdateHandler(UserLinksStorageService linksStorageService) {
-        this.linksStorageService = linksStorageService;
-    }
+    private final ChatLinkRepository chatLinkRepository;
 
     @Override
     public boolean supports(Update update) {
         return HandlerUtils.isCommand(update, Command.TRACK);
     }
 
-    @SuppressWarnings("checkstyle:ReturnCount")
     @Override
     protected Optional<AbstractSendRequest<? extends AbstractSendRequest<?>>> doHandle(Update update) {
-        var user = HandlerUtils.user(update);
         var chatID = HandlerUtils.chatID(update);
         var tokens = HandlerUtils.text(update).split(" ");
-        if (!linksStorageService.isRegistered(user)) {
+        if (tokens.length != 2) {
             return Optional.of(
-                new SendMessage(chatID, USER_NOT_REGISTERED_YET_MESSAGE)
-            );
-        } else if (tokens.length != 2) {
-            return Optional.of(
-                new SendMessage(chatID, getTrackExplanation(Command.TRACK.getCommand()))
+                createMessage(chatID, getTrackExplanation(Command.TRACK.getCommand()))
+                    .disableWebPagePreview(true)
             );
         }
-        var link = tokens[1];
-        if (!isHttpLink(link)) {
+        try {
+            chatLinkRepository.addLink(chatID, new AddLinkRequest(URI.create(tokens[1])));
             return Optional.of(
-                new SendMessage(chatID, getInvalidLinkMessage(link))
+                createMessage(chatID, getLinkAddedMessage(tokens[1]))
+            );
+        } catch (ScrapperApiException e) {
+            return Optional.of(
+                createErrorMessage(
+                    chatID,
+                    e.getApiErrorResponse().description(),
+                    getTrackExplanation(Command.TRACK.getCommand())
+                )
+            );
+        } catch (IllegalArgumentException e) {
+            return Optional.of(
+                createErrorMessage(
+                    chatID,
+                    getInvalidLinkMessage()
+                )
             );
         }
-        if (linksStorageService.addLink(user, tokens[1])) {
-            return Optional.of(
-                new SendMessage(chatID, getLinkAddedMessage(link))
-            );
-        }
-        return Optional.of(
-            new SendMessage(chatID, getLinkNotAddedMessage(link))
-        );
     }
 }

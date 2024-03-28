@@ -2,40 +2,39 @@ package edu.java.bot.handler.handlers.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.dto.response.ApiErrorResponse;
+import edu.java.bot.dto.response.scrapper.LinkResponse;
+import edu.java.bot.dto.response.scrapper.LinksListResponse;
+import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.handlers.HandlerTestUtils;
-import edu.java.bot.storage.InMemoryUserLinksStorageService;
-import edu.java.bot.storage.UserLinksStorageService;
-import java.util.Set;
+import edu.java.bot.repository.ChatLinkRepository;
+import java.net.URI;
+import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.http.HttpStatus;
+import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_CHAT_ID;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
-import static edu.java.bot.handler.handlers.HandlerTestUtils.createSendMessage;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
-import static edu.java.bot.handler.util.HandlerMessages.LINKS_LIST;
-import static edu.java.bot.handler.util.HandlerMessages.NO_LINKS_MESSAGE;
-import static edu.java.bot.handler.util.HandlerMessages.USER_NOT_REGISTERED_YET_MESSAGE;
+import static edu.java.bot.utils.MessagesUtils.NO_LINKS_MESSAGE;
+import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
+import static edu.java.bot.utils.MessagesUtils.createMessage;
+import static edu.java.bot.utils.MessagesUtils.getLinksList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 class ListUpdateHandlerTest {
 
-    ListUpdateHandler listUpdateHandler = new ListUpdateHandler(new InMemoryUserLinksStorageService());
-
     @Mock
-    static UserLinksStorageService storageService = Mockito.mock(UserLinksStorageService.class);
+    ChatLinkRepository storageService = Mockito.mock(ChatLinkRepository.class);
 
-    @BeforeEach
-    void setup() {
-        ReflectionTestUtils.setField(listUpdateHandler, "linksStorageService", storageService);
-    }
+    ListUpdateHandler listUpdateHandler = new ListUpdateHandler(storageService);
 
     public static Stream<Arguments> supportsSource() {
         return Stream.of(
@@ -58,36 +57,52 @@ class ListUpdateHandlerTest {
     }
 
     @Test
-    void doHandle_whenNotRegistered_shouldReturnNotRegisteredMessage() {
-        when(storageService.isRegistered(any())).thenReturn(false);
+    void doHandle_whenScrapperException_shouldReturnExceptionDescription() {
+        String description = "Описание";
+        when(storageService.getLinks(any()))
+            .thenThrow(new ScrapperApiException(new ApiErrorResponse(
+                description,
+                HttpStatus.BAD_REQUEST,
+                "dfgf",
+                "ghdfghdf",
+                List.of()
+            )));
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
-            .orElse(createSendMessage(""));
-        assertEqualsSendMessages(actual, createSendMessage(USER_NOT_REGISTERED_YET_MESSAGE));
+            .orElse(createMessage(DEFAULT_CHAT_ID));
+        assertEqualsSendMessages(actual, createErrorMessage(DEFAULT_CHAT_ID, description));
     }
 
     @Test
     void doHandle_whenEmptyList_shouldReturnNoLinksMessage() {
-        when(storageService.isRegistered(any())).thenReturn(true);
-        when(storageService.getLinks(any())).thenReturn(Set.of());
+        when(storageService.getLinks(any())).thenReturn(new LinksListResponse(List.of(), 0));
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
-            .orElse(createSendMessage(""));
-        assertEqualsSendMessages(actual, createSendMessage(NO_LINKS_MESSAGE));
+            .orElse(createMessage(DEFAULT_CHAT_ID));
+        assertEqualsSendMessages(actual, createMessage(DEFAULT_CHAT_ID, NO_LINKS_MESSAGE));
     }
 
     @Test
     void doHandle_whenRegisteredAndHasTrackedLinks_shouldReturnListOfLinks() {
-        Set<String> links = Set.of("link1", "link2");
-        when(storageService.isRegistered(any())).thenReturn(true);
-        when(storageService.getLinks(any())).thenReturn(links);
+        var linkResponses = List.of(
+            new LinkResponse(1L, URI.create("http://google.com")),
+            new LinkResponse(2L, URI.create("http://yandex.ru"))
+        );
+        when(storageService.getLinks(any()))
+            .thenReturn(new LinksListResponse(linkResponses, 2));
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
         SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
-            .orElse(createSendMessage(""));
-        StringBuilder sb = new StringBuilder(LINKS_LIST);
-        for (var link: links) {
-            sb.append(link).append("\n");
-        }
-        assertEqualsSendMessages(actual, createSendMessage(sb.toString()));
+            .orElse(createMessage(DEFAULT_CHAT_ID));
+        assertEqualsSendMessages(
+            actual,
+            createMessage(
+                DEFAULT_CHAT_ID,
+                getLinksList(
+                    linkResponses.stream()
+                        .map(linkResponse -> linkResponse.url().toString())
+                        .toList()
+                )
+            )
+        );
     }
 }

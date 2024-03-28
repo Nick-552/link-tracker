@@ -3,6 +3,7 @@ package edu.java.bot.controller;
 import edu.java.bot.dto.request.LinkUpdate;
 import edu.java.bot.service.LinkUpdateNotificationService;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ class LinkUpdatesControllerTest {
     private final LinkUpdate linkUpdate = new LinkUpdate(
         1L,
         URI.create("url"),
+        OffsetDateTime.now().toString(),
         "description",
         List.of(1L)
     );
