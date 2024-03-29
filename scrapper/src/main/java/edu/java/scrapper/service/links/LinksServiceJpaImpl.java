@@ -9,6 +9,7 @@ import edu.java.scrapper.dto.request.RemoveLinkRequest;
 import edu.java.scrapper.dto.response.LinkResponse;
 import edu.java.scrapper.dto.response.LinksListResponse;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
+import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.exception.LinkNotFoundException;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.update.UpdateInfoServiceProvider;
@@ -52,12 +53,15 @@ public class LinksServiceJpaImpl extends LinksService {
         var chatEntity = jpaChatRepository.findById(chatId)
             .orElseThrow(ChatNotRegisteredException::new); // chat not registered
         var url = addLinkRequest.link();
-        var lastUpdate = updateInfoServiceProvider.provide(url).getLastUpdate(url);
         var optionalLinkEntity = jpaLinkRepository.findByUrl(url.toString());
         LinkEntity linkEntity;
         if (optionalLinkEntity.isPresent()) {
             linkEntity = optionalLinkEntity.get();
+            if (chatEntity.getLinks().contains(linkEntity)) {
+                throw new LinkAlreadyTrackedException();
+            }
         } else {
+            var lastUpdate = updateInfoServiceProvider.provide(url).getLastUpdate(url);
             linkEntity = new LinkEntity(
                 url.toString(),
                 lastUpdate,
@@ -66,7 +70,7 @@ public class LinksServiceJpaImpl extends LinksService {
             jpaLinkRepository.save(linkEntity);
         }
         chatEntity.addLink(linkEntity);
-        return new LinkResponse(chatId, url);
+        return new LinkResponse(linkEntity.toModelLink().id(), url);
     }
 
     @Override

@@ -1,9 +1,11 @@
 package edu.java.scrapper.service.tgchats;
 
 import edu.java.scrapper.IntegrationEnvironment;
+import edu.java.scrapper.dto.request.AddLinkRequest;
 import edu.java.scrapper.exception.ChatAlreadyRegisteredException;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;
+import edu.java.scrapper.service.links.LinksService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+import java.net.URI;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -25,6 +28,9 @@ public abstract class TgChatsServiceTest<T extends TgChatsService> extends Integ
 
     @Autowired
     private JdbcClient jdbcClient;
+
+    @Autowired
+    private LinksService linksService;
 
     protected abstract T createInstance();
 
@@ -57,7 +63,17 @@ public abstract class TgChatsServiceTest<T extends TgChatsService> extends Integ
         assertThatExceptionOfType(ChatNotRegisteredException.class)
             .isThrownBy(() -> tgChatsService.deleteChat(1L));
         tgChatsService.registerChat(chat);
+        flush();
+        linksService
+            .addLinkToChat(
+                chat.id(),
+                new AddLinkRequest(
+                    URI.create("https://github.com/Nick-552/link-tracker")
+                )
+            );
+        flush();
         tgChatsService.deleteChat(1L);
+        flush();
         var optionalChatFromBd = jdbcClient
             .sql("SELECT * FROM chats WHERE id = 1")
             .query(Chat.class)
