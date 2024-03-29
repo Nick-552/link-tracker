@@ -5,7 +5,7 @@ app:
     initial-delay: 10000
     force-check-delay: 0
     check-limit: 10
-  databaseAccessType: jdbc
+  databaseAccessType: jpa
 
 spring:
   application:
