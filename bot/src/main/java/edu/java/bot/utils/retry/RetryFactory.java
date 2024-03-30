@@ -1,6 +1,8 @@
 package edu.java.bot.utils.retry;
 
 import edu.java.bot.configuration.RetryConfig;
+import edu.java.bot.dto.response.ApiErrorResponse;
+import edu.java.bot.exception.ScrapperApiException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +41,14 @@ public class RetryFactory {
     }
 
     public static ExchangeFilterFunction createFilter(Retry retry) {
-        return (response, next) -> next.exchange(response)
+        return (request, next) -> next.exchange(request)
             .flatMap(clientResponse -> {
                 if (clientResponse.statusCode().isError()) {
-                    return clientResponse.createError();
+                    return clientResponse
+                            .bodyToMono(ApiErrorResponse.class)
+                            .flatMap(apiErrorResponse -> Mono.error(
+                                    new ScrapperApiException(apiErrorResponse)
+                            ));
                 } else {
                     return Mono.just(clientResponse);
                 }
@@ -58,6 +64,8 @@ public class RetryFactory {
         return throwable -> {
             if (throwable instanceof WebClientResponseException webClientResponseException) {
                 return codes.contains(webClientResponseException.getStatusCode().value());
+            } else if (throwable instanceof ScrapperApiException scrapperApiException) {
+                return codes.contains(scrapperApiException.getApiErrorResponse().code().value());
             }
             return true;
         };

@@ -3,18 +3,12 @@ package edu.java.bot.client.scrapper;
 import edu.java.bot.client.AbstractJsonWebClient;
 import edu.java.bot.dto.request.scrapper.AddLinkRequest;
 import edu.java.bot.dto.request.scrapper.RemoveLinkRequest;
-import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.dto.response.scrapper.LinkResponse;
 import edu.java.bot.dto.response.scrapper.LinksListResponse;
-import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.repository.ChatLinkRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 public class ScrapperClient extends AbstractJsonWebClient implements ChatLinkRepository {
 
@@ -28,13 +22,7 @@ public class ScrapperClient extends AbstractJsonWebClient implements ChatLinkRep
         WebClient.Builder webClientBuilder,
         @Value("${api-client.scrapper.base-url}") String baseUrl
     ) {
-        super(
-            webClientBuilder.filter(
-                ExchangeFilterFunction.ofResponseProcessor(
-                    ScrapperClient::exchangeFilterResponseProcessor
-                )
-            ), baseUrl
-        );
+        super(webClientBuilder, baseUrl);
     }
 
     public Void addTgChat(Long chatId) {
@@ -80,18 +68,5 @@ public class ScrapperClient extends AbstractJsonWebClient implements ChatLinkRep
             .retrieve()
             .bodyToMono(LinkResponse.class)
             .block();
-    }
-
-    private static Mono<ClientResponse> exchangeFilterResponseProcessor(ClientResponse response) {
-        HttpStatusCode status = response.statusCode();
-        if (status.isError()) {
-            return response.bodyToMono(ApiErrorResponse.class)
-                .flatMap(
-                    apiErrorResponse -> Mono.error(
-                        new ScrapperApiException(apiErrorResponse)
-                    )
-                );
-        }
-        return Mono.just(response);
     }
 }

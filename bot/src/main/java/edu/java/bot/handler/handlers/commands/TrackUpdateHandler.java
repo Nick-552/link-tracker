@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.dto.request.scrapper.AddLinkRequest;
-import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.repository.ChatLinkRepository;
@@ -41,14 +40,6 @@ public class TrackUpdateHandler extends UpdateHandlerWithNext {
             chatLinkRepository.addLink(chatID, new AddLinkRequest(URI.create(tokens[1])));
             return Optional.of(
                 createMessage(chatID, getLinkAddedMessage(tokens[1]))
-            );
-        } catch (ScrapperApiException e) {
-            return Optional.of(
-                createErrorMessage(
-                    chatID,
-                    e.getApiErrorResponse().description(),
-                    getTrackExplanation(Command.TRACK.getCommand())
-                )
             );
         } catch (IllegalArgumentException e) {
             return Optional.of(

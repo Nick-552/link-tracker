@@ -4,12 +4,18 @@ app:
   about: Бот для отслеживания изменений на страницах
   description: С помощью этого бота вы можете отслеживать обновление контента на таких страницах, как stackoverflow и GitHub.
   zone-offset: 3
+  ip-whitelist: ${IP_WHITELIST:}
 
 spring:
   application:
     name: bot
   jackson:
     time-zone: UTC
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
 
 api-client:
   scrapper:
@@ -17,10 +23,33 @@ api-client:
 
 retry:
   scrapper:
-    retry-type: linear
+    retry-type: exponential
     max-retries: 3
-    initial-interval: 10s
-    codes: 500, 501, 502, 503, 504, 521, 522, 523, 524
+    initial-interval: 5s
+    codes: 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: .*
+      http-status-code: TOO_MANY_REQUESTS
+      http-content-type: application/json
+      http-response-body: "{
+        \"description\": \"Слишком много запросов\",
+        \"status\": \"TOO_MANY_REQUESTS\",
+        \"exceptionName\": \"TooManyRequestsException.class\",
+        \"exceptionMessage\": \"Too many requests\",
+        \"stacktrace\": []
+      }"
+      rate-limits:
+        - cache-key: getRemoteAddr()
+          skip-condition: '@rateLimiterService.isSkipped(getRemoteAddr())'
+          bandwidths:
+            - capacity: 100
+              time: 1
+              unit: MINUTES
+              refill-speed: interval
 
 server:
   port: 8090
