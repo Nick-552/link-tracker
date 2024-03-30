@@ -89,6 +89,7 @@ public class LinksServiceJpaImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public void updateLink(Link link) {
         var linkEntity = jpaLinkRepository.findById(link.id())
             .orElseThrow(LinkNotFoundException::new); // no such link in links
@@ -97,6 +98,7 @@ public class LinksServiceJpaImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public List<Long> getChatIdsForLink(Link link) {
         var linkEntity = jpaLinkRepository.findById(link.id())
             .orElseThrow(LinkNotFoundException::new); // no such link in links
@@ -107,6 +109,7 @@ public class LinksServiceJpaImpl extends LinksService {
     }
 
     @Override
+    @Transactional
     public List<Link> listStaleLinks(int limit, Duration minTimeSinceLastCheck) {
         return jpaLinkRepository
             .findAllByLastCheckedAtIsBeforeOrderByLastCheckedAt(

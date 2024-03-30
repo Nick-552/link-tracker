@@ -6,6 +6,7 @@ import edu.java.scrapper.domain.jpa.repository.JpaLinkRepository;
 import edu.java.scrapper.exception.ChatAlreadyRegisteredException;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.model.Chat;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class TgChatsServiceJpaImpl implements TgChatsService {
 
 
     @Override
+    @Transactional
     public void registerChat(Chat chat) {
         if (jpaChatRepository.existsById(chat.id())) {
             throw new ChatAlreadyRegisteredException();
@@ -25,6 +27,7 @@ public class TgChatsServiceJpaImpl implements TgChatsService {
     }
 
     @Override
+    @Transactional
     public void deleteChat(Long id) {
         var chatEntity = jpaChatRepository.findById(id)
             .orElseThrow(ChatNotRegisteredException::new);

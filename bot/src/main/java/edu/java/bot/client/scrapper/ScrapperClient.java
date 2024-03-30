@@ -11,13 +11,11 @@ import edu.java.bot.repository.ChatLinkRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@Service
 public class ScrapperClient extends AbstractJsonWebClient implements ChatLinkRepository {
 
     private static final String TG_CHAT_URI = "/tg-chat/{id}";

@@ -15,6 +15,13 @@ api-client:
   scrapper:
     base-url: ${SCRAPPER_API_CLIENT_BASE_URL}
 
+retry:
+  scrapper:
+    retry-type: linear
+    max-retries: 3
+    initial-interval: 10s
+    codes: 500, 501, 502, 503, 504, 521, 522, 523, 524
+
 server:
   port: 8090
 
