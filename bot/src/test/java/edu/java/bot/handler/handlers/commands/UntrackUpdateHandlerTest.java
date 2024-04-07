@@ -21,11 +21,11 @@ import org.springframework.http.HttpStatus;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_CHAT_ID;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
-import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
 import static edu.java.bot.utils.MessagesUtils.createMessage;
 import static edu.java.bot.utils.MessagesUtils.getLinkRemovedMessage;
 import static edu.java.bot.utils.MessagesUtils.getTrackExplanation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -70,9 +70,8 @@ class UntrackUpdateHandlerTest {
                 List.of()
             )));
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("/track link");
-        SendMessage actual = (SendMessage) untrackUpdateHandler.doHandle(update)
-            .orElse(createMessage(DEFAULT_CHAT_ID));
-        assertEqualsSendMessages(actual, createErrorMessage(DEFAULT_CHAT_ID, description));
+        assertThatExceptionOfType(ScrapperApiException.class)
+            .isThrownBy(() -> untrackUpdateHandler.doHandle(update));
     }
 
     @Test

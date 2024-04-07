@@ -19,10 +19,10 @@ import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_CHAT_ID;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_USER_FNAME;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
-import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
 import static edu.java.bot.utils.MessagesUtils.createMessage;
 import static edu.java.bot.utils.MessagesUtils.getStartText;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -66,9 +66,8 @@ class StartUpdateHandlerTest {
                 List.of()
             )));
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
-        SendMessage actual = (SendMessage) startUpdateHandler.doHandle(update)
-            .orElse(createMessage(DEFAULT_CHAT_ID));
-        assertEqualsSendMessages(actual, createErrorMessage(DEFAULT_CHAT_ID, description));
+        assertThatExceptionOfType(ScrapperApiException.class)
+            .isThrownBy(() -> startUpdateHandler.doHandle(update));
     }
 
     @Test
