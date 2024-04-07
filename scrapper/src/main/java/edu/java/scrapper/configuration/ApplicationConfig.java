@@ -3,6 +3,7 @@ package edu.java.scrapper.configuration;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -11,7 +12,9 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     Scheduler scheduler,
     DatabaseAccessType databaseAccessType,
-    List<String> ipWhitelist
+    List<String> ipWhitelist,
+    Boolean useQueue,
+    Map<String, String> kafkaTopics
 ) {
     public record Scheduler(
         boolean enable,
