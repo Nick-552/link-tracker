@@ -5,7 +5,7 @@ app:
     initial-delay: 10000
     force-check-delay: 0
     check-limit: 10
-  databaseAccessType: jooq
+  databaseAccessType: jpa
 
 spring:
   application:
@@ -18,6 +18,9 @@ spring:
     password: postgres
   jooq:
     sql-dialect: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 api-client:
   github:

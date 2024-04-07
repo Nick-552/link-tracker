@@ -1,9 +1,9 @@
-package edu.java.scrapper.domain.repository.jooq;
+package edu.java.scrapper.util;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-public interface JooqRepositoryTest {
+public interface JooqTest {
 
     @DynamicPropertySource
     static void jooqAccessType(DynamicPropertyRegistry registry) {

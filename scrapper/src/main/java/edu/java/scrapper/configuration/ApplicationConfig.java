@@ -20,6 +20,6 @@ public record ApplicationConfig(
     }
 
     public enum DatabaseAccessType {
-        JDBC, JOOQ
+        JDBC, JOOQ, JPA
     }
 }
