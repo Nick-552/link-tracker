@@ -1,7 +1,7 @@
 package edu.java.scrapper.service.notification;
 
 import edu.java.scrapper.dto.request.bot.LinkUpdate;
-import edu.java.scrapper.service.kafka.ScrapperQueueProducer;
+import edu.java.scrapper.kafka.ScrapperQueueProducer;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

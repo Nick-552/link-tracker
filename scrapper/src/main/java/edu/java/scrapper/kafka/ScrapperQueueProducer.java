@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.kafka;
+package edu.java.scrapper.kafka;
 
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.dto.request.bot.LinkUpdate;
@@ -10,14 +10,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ScrapperQueueProducer {
 
-    private final KafkaTemplate<String, LinkUpdate> kafkaTemplate; // <key, value>
+    private final KafkaTemplate<String, LinkUpdate> kafkaTemplate;
 
     private final ApplicationConfig applicationConfig;
 
-    private static final String LINK_UPDATE_TOPIC = "link-update";
-
-
     public void sendMessage(LinkUpdate update) {
-        kafkaTemplate.send(applicationConfig.kafkaTopics().get(LINK_UPDATE_TOPIC), update);
+        kafkaTemplate.send(applicationConfig.kafkaTopics().linkUpdate(), update);
     }
 }

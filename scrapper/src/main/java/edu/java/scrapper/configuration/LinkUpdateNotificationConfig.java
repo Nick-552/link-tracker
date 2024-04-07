@@ -1,7 +1,7 @@
 package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.client.bot.BotClient;
-import edu.java.scrapper.service.kafka.ScrapperQueueProducer;
+import edu.java.scrapper.kafka.ScrapperQueueProducer;
 import edu.java.scrapper.service.notification.HttpLinkUpdateNotificationService;
 import edu.java.scrapper.service.notification.KafkaLinkUpdateNotificationService;
 import edu.java.scrapper.service.notification.LinkUpdateNotificationService;

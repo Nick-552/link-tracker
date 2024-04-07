@@ -3,7 +3,6 @@ package edu.java.scrapper.configuration;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -14,7 +13,7 @@ public record ApplicationConfig(
     DatabaseAccessType databaseAccessType,
     List<String> ipWhitelist,
     Boolean useQueue,
-    Map<String, String> kafkaTopics
+    KafkaTopics kafkaTopics
 ) {
     public record Scheduler(
         boolean enable,
@@ -27,4 +26,6 @@ public record ApplicationConfig(
     public enum DatabaseAccessType {
         JDBC, JOOQ, JPA
     }
+
+    public record KafkaTopics(String linkUpdate) { }
 }
