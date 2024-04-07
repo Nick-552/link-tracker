@@ -9,7 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(properties = {
     "BOT_API_CLIENT_BASE_URL=http://localhost:8090"
 })
-public class ScrapperApplicationTest {
+public class ScrapperApplicationTest extends IntegrationEnvironment {
 
     @Test
     @DisplayName("Spring context loading & beans initialization test")
