@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
+@DirtiesContext
 @TestPropertySource(properties = {
     "BOT_API_CLIENT_BASE_URL=http://localhost:8090"
 })
@@ -187,19 +189,19 @@ public abstract class LinksServiceTest<T extends LinksService> extends Integrati
             .params("link4", OffsetDateTime.now().minusHours(4), OffsetDateTime.now())
             .update();
         var link1 = jdbcClient.sql("SELECT * FROM links WHERE url = ?")
-            .param("link1")
+            .params("link1")
             .query(Link.class)
             .single();
         var link2 = jdbcClient.sql("SELECT * FROM links WHERE url = ?")
-            .param("link2")
+            .params("link2")
             .query(Link.class)
             .single();
         var link3 = jdbcClient.sql("SELECT * FROM links WHERE url = ?")
-            .param("link3")
+            .params("link3")
             .query(Link.class)
             .single();
         var link4 = jdbcClient.sql("SELECT * FROM links WHERE url = ?")
-            .param("link4")
+            .params("link4")
             .query(Link.class)
             .single();
         var staleLinks = linksService.listStaleLinks(1, Duration.ofMinutes(90));

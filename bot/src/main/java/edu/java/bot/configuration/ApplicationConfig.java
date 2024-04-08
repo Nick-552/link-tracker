@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -16,6 +17,15 @@ public record ApplicationConfig(
     String about,
     String description,
     @NotNull @Min(-12) @Max(12)
-    Integer zoneOffset
+    Integer zoneOffset,
+    List<String> ipWhitelist,
+    KafkaTopics kafkaTopics
 ) {
+
+    public record KafkaTopics(
+        @NotEmpty
+        String dlqSuffix,
+        @NotEmpty
+        String linkUpdate
+    ) { }
 }

@@ -1,12 +1,11 @@
 package edu.java.scrapper.service.scheduler;
 
-import edu.java.scrapper.client.bot.BotClient;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.dto.request.bot.LinkUpdate;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.links.LinksService;
+import edu.java.scrapper.service.notification.LinkUpdateNotificationService;
 import edu.java.scrapper.service.update.UpdateInfo;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -21,14 +20,14 @@ public class LinkUpdatesScheduler {
 
     private final LinksService linksService;
     private final ApplicationConfig applicationConfig;
-    private final BotClient botClient;
+    private final LinkUpdateNotificationService linkUpdateNotificationService;
 
     @Scheduled(fixedDelayString = "${app.scheduler.interval}", initialDelayString = "${app.scheduler.initial-delay}")
     public void update() {
         log.info("Updating...");
         var links = linksService.listStaleLinks(
             applicationConfig.scheduler().checkLimit(),
-            Duration.ofMinutes(applicationConfig.scheduler().forceCheckDelay())
+            applicationConfig.scheduler().forceCheckDelay()
         );
         links.forEach(link -> {
             try {
@@ -61,7 +60,7 @@ public class LinkUpdatesScheduler {
                 event.eventDescription(),
                 linksService.getChatIdsForLink(link)
             );
-            botClient.sendUpdate(update);
+            linkUpdateNotificationService.sendUpdate(update);
         });
     }
 }
