@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.atLeastOnce;
 @TestPropertySource(properties = {
     "SCRAPPER_API_CLIENT_BASE_URL=http://localhost:8080"
 })
+@DirtiesContext
 class LinkUpdatesKafkaListenerTest extends KafkaIntegrationEnvironment {
 
     @MockBean
