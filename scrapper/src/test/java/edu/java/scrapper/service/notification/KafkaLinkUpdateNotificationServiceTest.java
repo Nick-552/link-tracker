@@ -1,13 +1,15 @@
-package edu.java.scrapper.kafka;
+package edu.java.scrapper.service.notification;
 
 import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.dto.request.bot.LinkUpdate;
+import edu.java.scrapper.kafka.ScrapperQueueProducer;
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +23,20 @@ import static org.awaitility.Awaitility.await;
 @TestPropertySource(properties = {
     "BOT_API_CLIENT_BASE_URL=http://localhost:8090"
 })
-class ScrapperQueueProducerTest extends IntegrationEnvironment {
+class KafkaLinkUpdateNotificationServiceTest extends IntegrationEnvironment {
 
     @Autowired
-    private ScrapperQueueProducer scrapperQueueProducer;
+    ScrapperQueueProducer scrapperQueueProducer;
+
+    private KafkaLinkUpdateNotificationService kafkaLinkUpdateNotificationService;
 
     @Autowired
     private ApplicationConfig config;
+
+    @BeforeEach
+    public void setUp() {
+        kafkaLinkUpdateNotificationService = new KafkaLinkUpdateNotificationService(scrapperQueueProducer);
+    }
 
     @Test
     public void sendNotification_shouldWorkCorrectly() {
@@ -50,7 +59,7 @@ class ScrapperQueueProducerTest extends IntegrationEnvironment {
             )
         );
         kafkaConsumer.subscribe(List.of(config.kafkaTopics().linkUpdate()));
-        scrapperQueueProducer.sendMessage(linkUpdate);
+        kafkaLinkUpdateNotificationService.sendUpdate(linkUpdate);
         await()
             .pollInterval(Duration.ofMillis(100))
             .atMost(Duration.ofSeconds(5))
