@@ -33,7 +33,7 @@ public class HandlerUtils {
     }
 
     public static boolean isMessageAndHasText(Update update) {
-        return isMessage(update);
+        return isMessage(update) && update.message().text() != null;
     }
 
     public static boolean isCommand(Update update) {
