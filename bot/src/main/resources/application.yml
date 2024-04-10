@@ -70,6 +70,27 @@ bucket4j:
               unit: MINUTES
               refill-speed: interval
 
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+      exposure:
+        include: info, health, prometheus
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+  server:
+    port: 8091
+
 server:
   port: 8090
 

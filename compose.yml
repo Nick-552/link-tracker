@@ -67,11 +67,37 @@ services:
     volumes:
       - kafka1:/var/lib/kafka/data
 
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus:/prometheus
+    container_name: prometheus
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - grafana
+
 volumes:
   postgresql: { }
   kafka1: { }
   zoo-data: { }
   zoo-log: { }
+  prometheus: { }
+  grafana: { }
+
+
 
 networks:
   backend: { }
+  grafana: { }
