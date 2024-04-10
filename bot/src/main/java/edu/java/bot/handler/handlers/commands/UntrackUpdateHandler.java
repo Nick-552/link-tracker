@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import edu.java.bot.configuration.Command;
 import edu.java.bot.dto.request.scrapper.RemoveLinkRequest;
-import edu.java.bot.exception.ScrapperApiException;
 import edu.java.bot.handler.UpdateHandlerWithNext;
 import edu.java.bot.handler.util.HandlerUtils;
 import edu.java.bot.repository.ChatLinkRepository;
@@ -13,7 +12,6 @@ import java.net.URI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import static edu.java.bot.handler.util.HandlerUtils.isCommand;
-import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
 import static edu.java.bot.utils.MessagesUtils.createMessage;
 import static edu.java.bot.utils.MessagesUtils.getLinkRemovedMessage;
 import static edu.java.bot.utils.MessagesUtils.getTrackExplanation;
@@ -40,15 +38,9 @@ public class UntrackUpdateHandler extends UpdateHandlerWithNext {
             );
         }
         String link = tokens[1];
-        try {
-            chatLinkRepository.removeLink(chatID, new RemoveLinkRequest(URI.create(link)));
-            return Optional.of(
-                createMessage(chatID, getLinkRemovedMessage(link))
-            );
-        } catch (ScrapperApiException e) {
-            return Optional.of(
-                createErrorMessage(chatID, e.getApiErrorResponse().description())
-            );
-        }
+        chatLinkRepository.removeLink(chatID, new RemoveLinkRequest(URI.create(link)));
+        return Optional.of(
+            createMessage(chatID, getLinkRemovedMessage(link))
+        );
     }
 }

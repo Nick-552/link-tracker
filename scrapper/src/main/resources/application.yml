@@ -6,6 +6,7 @@ app:
     force-check-delay: 0
     check-limit: 10
   databaseAccessType: jpa
+  ip-whitelist: ${IP_WHITELIST:}
 
 spring:
   application:
@@ -21,6 +22,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
 
 api-client:
   github:
@@ -30,6 +36,46 @@ api-client:
     base-url: https://api.stackexchange.com/2.3
   bot:
     base-url: ${BOT_API_CLIENT_BASE_URL}
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: .*
+      http-status-code: TOO_MANY_REQUESTS
+      http-content-type: application/json
+      http-response-body: "{
+        \"description\": \"Too many requests\",
+        \"code\": \"TOO_MANY_REQUESTS\",
+        \"exceptionName\": \"TooManyRequestsException.class\",
+        \"exceptionMessage\": \"Too many requests\",
+        \"stacktrace\": []
+      }"
+      rate-limits:
+        - cache-key: getRemoteAddr()
+          skip-condition: '@rateLimiterService.isSkipped(getRemoteAddr())'
+          bandwidths:
+            - capacity: 100
+              time: 1
+              unit: MINUTES
+              refill-speed: interval
+
+retry:
+  bot:
+    retry-type: linear
+    max-retries: 3
+    initial-interval: 10s
+    codes: 408, 429,500, 501, 502, 503, 504, 521, 522, 523, 524
+  github:
+    retry-type: linear
+    max-retries: 3
+    initial-interval: 10s
+    codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+  stackoverflow:
+    retry-type: linear
+    max-retries: 3
+    initial-interval: 10s
+    codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
 
 server:
   port: 8080

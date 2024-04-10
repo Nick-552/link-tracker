@@ -22,10 +22,10 @@ import static edu.java.bot.handler.handlers.HandlerTestUtils.DEFAULT_CHAT_ID;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.assertEqualsSendMessages;
 import static edu.java.bot.handler.handlers.HandlerTestUtils.mockedUpdateWithMessageWithText;
 import static edu.java.bot.utils.MessagesUtils.NO_LINKS_MESSAGE;
-import static edu.java.bot.utils.MessagesUtils.createErrorMessage;
 import static edu.java.bot.utils.MessagesUtils.createMessage;
 import static edu.java.bot.utils.MessagesUtils.getLinksList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -68,9 +68,8 @@ class ListUpdateHandlerTest {
                 List.of()
             )));
         Update update = HandlerTestUtils.mockedUpdateWithMessageWithText("no matter what");
-        SendMessage actual = (SendMessage) listUpdateHandler.doHandle(update)
-            .orElse(createMessage(DEFAULT_CHAT_ID));
-        assertEqualsSendMessages(actual, createErrorMessage(DEFAULT_CHAT_ID, description));
+        assertThatExceptionOfType(ScrapperApiException.class)
+            .isThrownBy(() -> listUpdateHandler.doHandle(update));
     }
 
     @Test

@@ -6,7 +6,6 @@ import edu.java.scrapper.dto.request.bot.LinkUpdate;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.links.LinksService;
 import edu.java.scrapper.service.update.UpdateInfo;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -28,7 +27,7 @@ public class LinkUpdatesScheduler {
         log.info("Updating...");
         var links = linksService.listStaleLinks(
             applicationConfig.scheduler().checkLimit(),
-            Duration.ofMinutes(applicationConfig.scheduler().forceCheckDelay())
+            applicationConfig.scheduler().forceCheckDelay()
         );
         links.forEach(link -> {
             try {

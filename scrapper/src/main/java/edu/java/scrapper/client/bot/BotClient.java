@@ -6,13 +6,11 @@ import edu.java.scrapper.dto.response.ApiErrorResponse;
 import edu.java.scrapper.exception.ApiException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@Service
 public class BotClient extends AbstractJsonWebClient {
 
     private static final String UPDATES_URI = "/updates";
