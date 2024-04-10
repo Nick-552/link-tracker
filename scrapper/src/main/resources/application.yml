@@ -65,17 +65,17 @@ retry:
     retry-type: linear
     max-retries: 3
     initial-interval: 10s
-    codes: 429,500, 501, 502, 503, 504, 521, 522, 523, 524
+    codes: 408, 429,500, 501, 502, 503, 504, 521, 522, 523, 524
   github:
     retry-type: linear
     max-retries: 3
     initial-interval: 10s
-    codes: 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+    codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
   stackoverflow:
     retry-type: linear
     max-retries: 3
     initial-interval: 10s
-    codes: 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+    codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
 
 server:
   port: 8080

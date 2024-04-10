@@ -26,7 +26,7 @@ retry:
     retry-type: exponential
     max-retries: 3
     initial-interval: 5s
-    codes: 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+    codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
 
 bucket4j:
   enabled: true
