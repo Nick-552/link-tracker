@@ -35,8 +35,8 @@ class LinkUpdatesKafkaListenerTest extends KafkaIntegrationEnvironment {
     @Autowired
     private KafkaProperties kafkaProperties;
 
-//    @Autowired
-//    private KafkaTemplate<String, String> wrongKafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, String> wrongKafkaTemplate;
 
     private static final LinkUpdate LINK_UPDATE = new LinkUpdate(
         1L,
@@ -80,20 +80,25 @@ class LinkUpdatesKafkaListenerTest extends KafkaIntegrationEnvironment {
             });
     }
 
-//    @Test
-//    public void updateLinks_whenWrongMessage_shouldSendToDlq() {
-//        wrongKafkaTemplate.send("linkUpdate", "wrong");
-//        KafkaConsumer<String, String> dlqKafkaConsumer = new KafkaConsumer<>(
-//                kafkaProperties.buildConsumerProperties(null)
-//        );
-//        dlqKafkaConsumer.subscribe(List.of("linkUpdate_dlq"));
-//        await()
-//            .pollInterval(Duration.ofMillis(100))
-//            .atMost(Duration.ofSeconds(20))
-//            .untilAsserted(() -> {
-//                var values = dlqKafkaConsumer.poll(Duration.ofMillis(100));
-//                assertThat(values).hasSizeGreaterThanOrEqualTo(1);
-//                //assertThat(values.iterator().next().value()).isEqualTo("wrong");
-//            });
-//    }
+    @Test
+    public void updateLinks_whenWrongMessage_shouldSendToDlq() {
+        wrongKafkaTemplate.send("linkUpdate", "wrong");
+        var linkUpdate = new LinkUpdate(
+            1L,
+            URI.create("http://test.com"),
+            "",
+            "!!! Update after wrong message !!!",
+            List.of(1L));
+        kafkaTemplate.send("linkUpdate", linkUpdate);
+        KafkaConsumer<String, LinkUpdate> dlqKafkaConsumer = new KafkaConsumer<>(
+            kafkaProperties.buildConsumerProperties(null)
+        );
+        dlqKafkaConsumer.subscribe(List.of("linkUpdate_dlq"));
+        await()
+            .pollInterval(Duration.ofMillis(100))
+            .atMost(Duration.ofSeconds(20))
+            .untilAsserted(() -> {
+                Mockito.verify(linkUpdateNotificationService).notifyAllWithLinkUpdate(linkUpdate);
+            });
+    }
 }
