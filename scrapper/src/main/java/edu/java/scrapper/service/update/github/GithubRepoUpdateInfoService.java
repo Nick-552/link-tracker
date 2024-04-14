@@ -51,7 +51,7 @@ public class GithubRepoUpdateInfoService implements UpdateInfoService {
                 return eventInfoProvider.getEventInfo(event);
             }
             return new EventInfo(event.getCreatedAt(), "Неизвестное событие");
-        }).toList();
+        }).toList().reversed();
         return new UpdateInfo(eventsInfos);
     }
 }

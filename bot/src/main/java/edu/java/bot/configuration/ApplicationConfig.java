@@ -18,6 +18,14 @@ public record ApplicationConfig(
     String description,
     @NotNull @Min(-12) @Max(12)
     Integer zoneOffset,
-    List<String> ipWhitelist
+    List<String> ipWhitelist,
+    KafkaTopics kafkaTopics
 ) {
+
+    public record KafkaTopics(
+        @NotEmpty
+        String dlqSuffix,
+        @NotEmpty
+        String linkUpdate
+    ) { }
 }
