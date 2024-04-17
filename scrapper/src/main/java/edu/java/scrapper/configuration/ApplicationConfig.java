@@ -11,7 +11,9 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     Scheduler scheduler,
     DatabaseAccessType databaseAccessType,
-    List<String> ipWhitelist
+    List<String> ipWhitelist,
+    Boolean useQueue,
+    KafkaTopics kafkaTopics
 ) {
     public record Scheduler(
         boolean enable,
@@ -24,4 +26,6 @@ public record ApplicationConfig(
     public enum DatabaseAccessType {
         JDBC, JOOQ, JPA
     }
+
+    public record KafkaTopics(String linkUpdate) { }
 }

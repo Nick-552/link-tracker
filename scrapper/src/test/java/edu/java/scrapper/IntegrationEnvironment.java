@@ -18,8 +18,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import java.nio.file.Path;
 import java.sql.Connection;
 
@@ -27,6 +30,10 @@ import java.sql.Connection;
 @Log4j2
 public abstract class IntegrationEnvironment {
     public static PostgreSQLContainer<?> POSTGRES;
+
+    @Container
+    public static KafkaContainer KAFKA_CONTAINER
+        = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.3.2"));
 
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
@@ -67,5 +74,12 @@ public abstract class IntegrationEnvironment {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
+    }
+
+    @DynamicPropertySource
+    static void kafkaProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.kafka.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
+        registry.add("spring.kafka.consumer.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
+        registry.add("spring.kafka.producer.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
     }
 }

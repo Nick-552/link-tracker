@@ -7,6 +7,9 @@ app:
     check-limit: 10
   databaseAccessType: jpa
   ip-whitelist: ${IP_WHITELIST:}
+  use-queue: true
+  kafka-topics:
+    link-update: linkUpdate
 
 spring:
   application:
@@ -27,6 +30,13 @@ spring:
       - rate-limit-buckets
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
 
 api-client:
   github:
@@ -76,6 +86,27 @@ retry:
     max-retries: 3
     initial-interval: 10s
     codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+      exposure:
+        include: info, health, prometheus
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+  server:
+    port: 8081
 
 server:
   port: 8080
