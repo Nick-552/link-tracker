@@ -20,10 +20,10 @@ spring:
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_URL:localhost:9092}
     consumer:
       group-id: bot
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${KAFKA_URL:localhost:9092}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
@@ -31,7 +31,7 @@ spring:
         spring.json.trusted.packages: "*"
         spring.json.value.default.type: edu.java.bot.dto.request.LinkUpdate
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${KAFKA_URL:localhost:9092}
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
