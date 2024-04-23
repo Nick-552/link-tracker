@@ -14,6 +14,8 @@ services:
       - bot/src/main/resources/config.env
     environment:
       - SCRAPPER_API_CLIENT_BASE_URL=http://host.docker.internal:8080
+    networks:
+      - backend
 
   scrapper:
     container_name: scrapper
@@ -30,13 +32,16 @@ services:
     env_file:
       - scrapper/src/main/resources/config.env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5435/scrapper
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/scrapper
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - KAFKA_URL=kafka:9092
       - BOT_API_CLIENT_BASE_URL=http://host.docker.internal:8090
+    networks:
+      - backend
 
   postgresql:
+    container_name: postgresql
     image: postgres:16
     ports:
       - "5435:5432"
@@ -139,8 +144,6 @@ volumes:
   zoo-log: { }
   prometheus: { }
   grafana: { }
-
-
 
 networks:
   backend: { }
