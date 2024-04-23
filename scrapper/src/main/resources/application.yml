@@ -17,9 +17,9 @@ spring:
   liquibase:
     enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5435/scrapper
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/scrapper}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jooq:
     sql-dialect: postgres
   jpa:
@@ -32,7 +32,7 @@ spring:
       spec: maximumSize=100000,expireAfterAccess=3600s
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${KAFKA_URL:localhost:9092}
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
@@ -75,17 +75,17 @@ retry:
     retry-type: linear
     max-retries: 3
     initial-interval: 10s
-    codes: 429,500, 501, 502, 503, 504, 521, 522, 523, 524
+    codes: 408, 429,500, 501, 502, 503, 504, 521, 522, 523, 524
   github:
     retry-type: linear
     max-retries: 3
     initial-interval: 10s
-    codes: 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+    codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
   stackoverflow:
     retry-type: linear
     max-retries: 3
     initial-interval: 10s
-    codes: 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
+    codes: 408, 429, 500, 501, 502, 503, 504, 521, 522, 523, 524
 
 management:
   metrics:
